@@ -1,0 +1,227 @@
+@startuml lab1-classes
+' Pet care platform: LAB1 class diagram (trimmed)
+' Later labs add: WorkSchedule, WorkingHours, TimeOff, ServiceReport, Incident, Message, Comment, ServiceFilter
+skinparam classAttributeIconSize 0
+skinparam nodesep 50
+skinparam ranksep 60
+hide empty members
+
+' ===================== Enums =====================
+package "Enums" <<Rectangle>> {
+enum Role {
+  ADMIN
+  COMPANY_MANAGER
+  CARETAKER
+  PET_OWNER
+}
+
+enum ReservationStatus {
+  PENDING
+  CONFIRMED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+  REJECTED
+}
+
+enum ServiceStatus {
+  ACTIVE
+  TEMPORARILY_UNAVAILABLE
+  INACTIVE
+}
+
+enum ServiceType {
+  VETERINARY
+  GROOMING
+  PET_SITTING
+  DOG_WALKING
+  BOARDING
+}
+
+enum ServiceLocation {
+  PROVIDER_PREMISES
+  CLIENT_HOME
+  OUTDOORS
+}
+
+enum Species {
+  DOG
+  CAT
+  BIRD
+  RODENT
+  OTHER
+}
+
+enum PetSize {
+  SMALL
+  MEDIUM
+  LARGE
+}
+}
+
+' ===================== Base =====================
+abstract class BaseEntity {
+  - id : int
+  + isNew() : boolean
+}
+
+interface Rateable {
+  + getAverageRating() : double
+}
+
+' ===================== Users =====================
+abstract class User {
+  - username : String
+  - passwordHash : String
+  - email : String
+  - firstName : String
+  - lastName : String
+  - phone : String
+  - blocked : boolean
+  - createdAt : LocalDateTime
+  + {abstract} getRole() : Role
+  + getFullName() : String
+  + checkPassword(rawPassword : String) : boolean
+  + canLogin() : boolean
+}
+
+class PetOwner {
+  - address : String
+  - pets : List<Pet>
+  + addPet(pet : Pet) : void
+  + removePet(pet : Pet) : void
+}
+
+class Caretaker {
+  - bio : String
+  - experienceYears : int
+  - company : Company
+  + isIndependent() : boolean
+}
+
+class CompanyManager {
+  - company : Company
+}
+
+class Administrator {
+}
+
+' ===================== Company & services =====================
+class Company {
+  - name : String
+  - companyCode : String
+  - city : String
+  - address : String
+  - active : boolean
+  - services : List<Service>
+  - caretakers : List<Caretaker>
+  + addService(s : Service) : void
+  + removeService(s : Service) : void
+  + hireCaretaker(c : Caretaker) : void
+  + releaseCaretaker(c : Caretaker) : void
+}
+
+class Service {
+  - title : String
+  - description : String
+  - type : ServiceType
+  - price : BigDecimal
+  - durationMinutes : int
+  - location : ServiceLocation
+  - status : ServiceStatus
+  - allowedSpecies : Set<Species>
+  - allowedSizes : Set<PetSize>
+  - company : Company
+  + changePrice(newPrice : BigDecimal) : void
+  + setTemporarilyUnavailable(flag : boolean) : void
+  + deactivate() : void
+  + accepts(pet : Pet) : boolean
+}
+
+class Pet {
+  - name : String
+  - species : Species
+  - size : PetSize
+  - birthDate : LocalDate
+  - weightKg : double
+  - notes : String
+  - photoPath : String
+  - owner : PetOwner
+  + getAge() : Period
+}
+
+' ===================== Reservations & reviews =====================
+class Reservation {
+  - start : LocalDateTime
+  - end : LocalDateTime
+  - status : ReservationStatus
+  - price : BigDecimal
+  - createdAt : LocalDateTime
+  - owner : PetOwner
+  - pet : Pet
+  - service : Service
+  - caretaker : Caretaker
+  - reviews : List<Review>
+  + confirm() : void
+  + reject() : void
+  + cancel() : void
+  + start() : void
+  + complete() : void
+  + isParticipant(u : User) : boolean
+  + addReview(r : Review) : void
+  + removeReview(r : Review) : void
+}
+
+class Review {
+  - rating : int {1..5}
+  - comment : String
+  - petBehaviorRating : Integer
+  - createdAt : LocalDateTime
+  - active : boolean
+  - reservation : Reservation
+  - author : User
+  - target : Rateable
+}
+
+' ===================== Relationships =====================
+BaseEntity <|-- User
+BaseEntity <|-- Company
+BaseEntity <|-- Service
+BaseEntity <|-- Pet
+BaseEntity <|-- Reservation
+BaseEntity <|-- Review
+
+User <|-- PetOwner
+User <|-- Caretaker
+User <|-- CompanyManager
+User <|-- Administrator
+
+Rateable <|.. PetOwner
+Rateable <|.. Caretaker
+Rateable <|.. Company
+
+CompanyManager "1..*" --> "1" Company : manages >
+Company "1" *-- "0..*" Service : offers >
+Company "0..1" o-- "0..*" Caretaker : employs >
+PetOwner "1" *-- "0..*" Pet : owns >
+
+Reservation "0..*" --> "1" PetOwner : booked by >
+Reservation "0..*" --> "1" Pet : for >
+Reservation "0..*" --> "1" Service : books >
+Reservation "0..*" --> "0..1" Caretaker : assigned to >
+Reservation "1" *-- "0..*" Review
+Review "0..*" --> "1" User : author >
+Review "0..*" --> "1" Rateable : target >
+
+note bottom of Review
+  Only for COMPLETED reservations.
+  One review per (reservation, author).
+  Average rating = active reviews only.
+end note
+
+note right of Service
+  status: TEMPORARILY_UNAVAILABLE = paused by manager;
+  INACTIVE = "deleted" but kept because it has reservations.
+end note
+
+@enduml
