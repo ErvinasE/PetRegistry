@@ -84,7 +84,8 @@ public class M5Check {
             check("tabs can't be closed", tabs.getTabClosingPolicy() == TabPane.TabClosingPolicy.UNAVAILABLE);
             for (Tab tab : tabs.getTabs()) {
                 tabs.getSelectionModel().select(tab);
-                boolean loaded = tab.getContent() instanceof BorderPane pane && pane.getCenter() instanceof Label;
+                // Each tab FXML has a BorderPane root with something in the centre (a placeholder, or M6+'s table).
+                boolean loaded = tab.getContent() instanceof BorderPane pane && pane.getCenter() != null;
                 check("tab '" + tab.getText() + "' loaded its FXML and can be selected",
                         loaded && tabs.getSelectionModel().getSelectedItem() == tab);
             }

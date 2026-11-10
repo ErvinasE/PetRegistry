@@ -1,0 +1,11 @@
+/* A field with a validation error gets a red glow.
+   -fx-effect is drawn around the control and doesn't change its size, so the layout doesn't move
+   (a thicker border would push the other fields). */
+.error {
+    -fx-effect: dropshadow(three-pass-box, #d32f2f, 8, 0.6, 0, 0);
+}
+
+.photo-frame {
+    -fx-border-color: #b0b0b0;
+    -fx-background-color: #f4f4f4;
+}

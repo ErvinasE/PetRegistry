@@ -51,7 +51,11 @@ public class PetService {
         Repositories.pets().delete(pet.getId());
     }
 
-    private void validate(Pet pet, PetOwner owner) {
+    /**
+     * Checks the pet without saving anything. create/update call it too.
+     * Public so the form can check a draft copy BEFORE it changes the stored pet.
+     */
+    public void validate(Pet pet, PetOwner owner) {
         Map<String, String> errors = new LinkedHashMap<>();
         if (isBlank(pet.getName())) {
             errors.put("name", "Įveskite gyvūno vardą");

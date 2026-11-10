@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane stylesheets="@style.css"
+            xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.petregistry.controller.PetFormController">
+    <padding>
+        <Insets bottom="12.0" left="12.0" right="12.0" top="12.0"/>
+    </padding>
+
+    <center>
+        <HBox spacing="16.0">
+            <!-- Left: the fields. "*" = required. -->
+            <GridPane hgap="8.0" vgap="8.0">
+                <columnConstraints>
+                    <ColumnConstraints minWidth="100.0"/>
+                    <ColumnConstraints prefWidth="250.0"/>
+                </columnConstraints>
+
+                <Label text="Vardas *" GridPane.rowIndex="0"/>
+                <TextField fx:id="nameField" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+                <Label text="Rūšis *" GridPane.rowIndex="1"/>
+                <ComboBox fx:id="speciesBox" maxWidth="Infinity" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+                <Label text="Dydis *" GridPane.rowIndex="2"/>
+                <ComboBox fx:id="sizeBox" maxWidth="Infinity" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+
+                <!-- Not editable by typing: the date is picked from the calendar, so there is no text to parse.
+                     The ✕ button clears it (the birth date is optional). -->
+                <Label text="Gimimo data" GridPane.rowIndex="3"/>
+                <HBox spacing="4.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                    <DatePicker fx:id="birthDatePicker" editable="false" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
+                    <Button fx:id="clearBirthDateButton" onAction="#onClearBirthDate" text="✕"/>
+                </HBox>
+
+                <Label text="Svoris (kg) *" GridPane.rowIndex="4"/>
+                <TextField fx:id="weightField" promptText="pvz. 4,5" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+
+                <Label text="Šeimininkas *" GridPane.rowIndex="5"/>
+                <ComboBox fx:id="ownerBox" maxWidth="Infinity" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+
+                <Label text="Pastabos" GridPane.rowIndex="6"/>
+                <TextArea fx:id="notesArea" prefRowCount="3" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="6"/>
+            </GridPane>
+
+            <!-- Right: the photo preview -->
+            <VBox alignment="TOP_CENTER" spacing="8.0">
+                <Label text="Nuotrauka"/>
+                <StackPane maxHeight="160.0" maxWidth="160.0" minHeight="160.0" minWidth="160.0" styleClass="photo-frame">
+                    <ImageView fx:id="photoView" fitHeight="160.0" fitWidth="160.0" preserveRatio="true"/>
+                </StackPane>
+                <Label fx:id="photoLabel" maxWidth="160.0" wrapText="true"/>
+                <HBox alignment="CENTER" spacing="6.0">
+                    <Button fx:id="choosePhotoButton" onAction="#onChoosePhoto" text="Pasirinkti…"/>
+                    <Button fx:id="removePhotoButton" onAction="#onRemovePhoto" text="Išvalyti"/>
+                </HBox>
+            </VBox>
+        </HBox>
+    </center>
+
+    <bottom>
+        <HBox alignment="CENTER_RIGHT" spacing="8.0">
+            <padding>
+                <Insets top="12.0"/>
+            </padding>
+            <!-- defaultButton: Enter = Išsaugoti. cancelButton: Esc = Atšaukti. -->
+            <Button fx:id="saveButton" defaultButton="true" onAction="#onSave" text="Išsaugoti"/>
+            <Button fx:id="cancelButton" cancelButton="true" onAction="#onCancel" text="Atšaukti"/>
+        </HBox>
+    </bottom>
+</BorderPane>
