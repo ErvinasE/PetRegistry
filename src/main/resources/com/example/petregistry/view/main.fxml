@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+
+<BorderPane prefHeight="650.0" prefWidth="1000.0"
+            xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.petregistry.controller.MainController">
+
+    <top>
+        <MenuBar>
+            <menus>
+                <Menu text="Failas">
+                    <items>
+                        <MenuItem fx:id="exitItem" text="Išeiti" onAction="#onExit"/>
+                    </items>
+                </Menu>
+                <!-- LAB2 (M11) enables these two -->
+                <Menu text="Duomenų bazė">
+                    <items>
+                        <MenuItem fx:id="connectItem" text="Prisijungti…" disable="true"/>
+                        <MenuItem fx:id="disconnectItem" text="Atsijungti" disable="true"/>
+                    </items>
+                </Menu>
+                <Menu text="Pagalba">
+                    <items>
+                        <MenuItem fx:id="aboutItem" text="Apie" onAction="#onAbout"/>
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
+    </top>
+
+    <center>
+        <TabPane tabClosingPolicy="UNAVAILABLE">
+            <tabs>
+                <!-- Each tab is its own FXML + controller. fx:id "usersTab" -> field "usersTabController" -->
+                <Tab text="Vartotojai">
+                    <content>
+                        <fx:include fx:id="usersTab" source="users-tab.fxml"/>
+                    </content>
+                </Tab>
+                <Tab text="Įmonės">
+                    <content>
+                        <fx:include fx:id="companiesTab" source="companies-tab.fxml"/>
+                    </content>
+                </Tab>
+                <Tab text="Paslaugos">
+                    <content>
+                        <fx:include fx:id="servicesTab" source="services-tab.fxml"/>
+                    </content>
+                </Tab>
+                <Tab text="Gyvūnai">
+                    <content>
+                        <fx:include fx:id="petsTab" source="pets-tab.fxml"/>
+                    </content>
+                </Tab>
+                <Tab text="Rezervacijos">
+                    <content>
+                        <fx:include fx:id="reservationsTab" source="reservations-tab.fxml"/>
+                    </content>
+                </Tab>
+            </tabs>
+        </TabPane>
+    </center>
+
+    <bottom>
+        <HBox>
+            <padding>
+                <Insets bottom="4.0" left="8.0" right="8.0" top="4.0"/>
+            </padding>
+            <Label fx:id="statusLabel" text="Duomenys atmintyje"/>
+        </HBox>
+    </bottom>
+</BorderPane>

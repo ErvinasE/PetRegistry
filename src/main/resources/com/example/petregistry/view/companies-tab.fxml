@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+
+<!-- M8 replaces the placeholder with the filter bar, table and buttons -->
+<BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.petregistry.controller.CompaniesTabController">
+    <center>
+        <Label text="Įmonių sąrašas (M8)"/>
+    </center>
+</BorderPane>

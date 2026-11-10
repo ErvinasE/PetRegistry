@@ -4,7 +4,7 @@ module com.example.petregistry {
     requires jbcrypt;
     requires java.sql;
 
-    opens com.example.petregistry to javafx.fxml;
+    opens com.example.petregistry.controller to javafx.fxml;
     opens com.example.petregistry.model to javafx.base;
     exports com.example.petregistry;
 }
