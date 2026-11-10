@@ -48,24 +48,36 @@ public class UserService {
 
     /** On create, the password is required and both fields must be equal. Only the hash is stored. */
     public User create(User user, String password, String passwordRepeat) {
-        Map<String, String> errors = validate(user);
-        checkPassword(password, passwordRepeat, errors);
-        throwIfAny(errors);
+        validate(user, password, passwordRepeat);
         user.setPasswordHash(hash(password));
         return Repositories.users().create(user);
     }
 
     /** On edit, blank password fields mean "keep the old password". */
     public void update(User user, String password, String passwordRepeat) {
-        Map<String, String> errors = validate(user);
-        boolean changePassword = !isBlank(password) || !isBlank(passwordRepeat);
-        if (changePassword) {
+        validate(user, password, passwordRepeat);
+        if (wantsNewPassword(password, passwordRepeat)) {
+            user.setPasswordHash(hash(password));
+        }
+        Repositories.users().update(user);
+    }
+
+    /**
+     * Checks the user and the password fields without saving anything. create/update call it too.
+     * A new user (id 0) must get a password; an existing one only if something was typed.
+     * Public so the form can check a draft copy BEFORE it changes the stored user.
+     */
+    public void validate(User user, String password, String passwordRepeat) {
+        Map<String, String> errors = validateFields(user);
+        if (user.isNew() || wantsNewPassword(password, passwordRepeat)) {
             checkPassword(password, passwordRepeat, errors);
         }
         throwIfAny(errors);
-        if (changePassword) {
-            user.setPasswordHash(hash(password));
-        }
+    }
+
+    /** Blocking isn't a form edit: no validation, no password fields. A blocked user can't log in. */
+    public void setBlocked(User user, boolean blocked) {
+        user.setBlocked(blocked);
         Repositories.users().update(user);
     }
 
@@ -110,7 +122,7 @@ public class UserService {
     }
 
     /** Checks the user fields. Returns the errors instead of throwing, so password errors can be added. */
-    private Map<String, String> validate(User user) {
+    private Map<String, String> validateFields(User user) {
         Map<String, String> errors = new LinkedHashMap<>();
 
         String username = user.getUsername();
@@ -143,7 +155,15 @@ public class UserService {
         if (user instanceof CompanyManager manager && manager.getCompany() == null) {
             errors.put("company", "Vadybininkui būtina nurodyti įmonę");
         }
+        if (user instanceof Caretaker caretaker && caretaker.getExperienceYears() < 0) {
+            errors.put("experienceYears", "Patirtis negali būti neigiama");
+        }
         return errors;
+    }
+
+    /** On edit, empty password fields mean "keep the old one". Typing in either field means "change it". */
+    private static boolean wantsNewPassword(String password, String passwordRepeat) {
+        return !isBlank(password) || !isBlank(passwordRepeat);
     }
 
     private void checkPassword(String password, String passwordRepeat, Map<String, String> errors) {

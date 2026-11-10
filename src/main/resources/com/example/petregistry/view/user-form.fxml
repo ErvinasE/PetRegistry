@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox spacing="10.0" stylesheets="@style.css"
+      xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.example.petregistry.controller.UserFormController">
+    <padding>
+        <Insets bottom="12.0" left="12.0" right="12.0" top="12.0"/>
+    </padding>
+
+    <!-- Fields every role has. "*" = required. -->
+    <GridPane hgap="8.0" vgap="8.0">
+        <columnConstraints>
+            <ColumnConstraints minWidth="150.0"/>
+            <ColumnConstraints prefWidth="280.0"/>
+        </columnConstraints>
+
+        <!-- Enabled only when creating: an existing object can't change its class (PetOwner → Caretaker) -->
+        <Label text="Rolė *" GridPane.rowIndex="0"/>
+        <ComboBox fx:id="roleBox" maxWidth="Infinity" promptText="Pasirinkite rolę"
+                  GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+        <Label text="Prisijungimo vardas *" GridPane.rowIndex="1"/>
+        <TextField fx:id="usernameField" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+        <Label text="El. paštas *" GridPane.rowIndex="2"/>
+        <TextField fx:id="emailField" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+
+        <Label text="Vardas *" GridPane.rowIndex="3"/>
+        <TextField fx:id="firstNameField" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+
+        <Label text="Pavardė *" GridPane.rowIndex="4"/>
+        <TextField fx:id="lastNameField" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+
+        <Label text="Telefonas" GridPane.rowIndex="5"/>
+        <TextField fx:id="phoneField" promptText="+370xxxxxxxx" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+
+        <Label fx:id="passwordLabel" text="Slaptažodis *" GridPane.rowIndex="6"/>
+        <PasswordField fx:id="passwordField" GridPane.columnIndex="1" GridPane.rowIndex="6"/>
+
+        <Label text="Pakartokite slaptažodį" GridPane.rowIndex="7"/>
+        <PasswordField fx:id="passwordRepeatField" GridPane.columnIndex="1" GridPane.rowIndex="7"/>
+
+        <Label fx:id="passwordHint" style="-fx-text-fill: grey;" wrapText="true"
+               GridPane.columnIndex="1" GridPane.rowIndex="8"/>
+    </GridPane>
+
+    <!-- ======== Pet owner only. Hidden AND unmanaged until that role is chosen, so it takes no space. ======== -->
+    <VBox fx:id="ownerFields" managed="false" spacing="8.0" visible="false">
+        <Separator/>
+        <GridPane hgap="8.0" vgap="8.0">
+            <columnConstraints>
+                <ColumnConstraints minWidth="150.0"/>
+                <ColumnConstraints prefWidth="280.0"/>
+            </columnConstraints>
+            <Label text="Adresas" GridPane.rowIndex="0"/>
+            <TextField fx:id="addressField" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+        </GridPane>
+
+        <!-- Edit mode only: the owner must already be saved before pets can point to it -->
+        <VBox fx:id="petsSection" managed="false" spacing="6.0" visible="false">
+            <Label text="Gyvūnai (pakeitimai išsaugomi iš karto)"/>
+            <ListView fx:id="petsList" prefHeight="110.0"/>
+            <HBox spacing="6.0">
+                <Button onAction="#onAddPet" text="Pridėti gyvūną"/>
+                <Button onAction="#onRemovePet" text="Pašalinti gyvūną"/>
+            </HBox>
+        </VBox>
+    </VBox>
+
+    <!-- ======== Caretaker only ======== -->
+    <VBox fx:id="caretakerFields" managed="false" spacing="8.0" visible="false">
+        <Separator/>
+        <GridPane hgap="8.0" vgap="8.0">
+            <columnConstraints>
+                <ColumnConstraints minWidth="150.0"/>
+                <ColumnConstraints prefWidth="280.0"/>
+            </columnConstraints>
+            <Label text="Patirtis (metais)" GridPane.rowIndex="0"/>
+            <TextField fx:id="experienceField" promptText="pvz. 3" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+            <!-- Read-only here: the company window (M8) hires and releases caretakers -->
+            <Label text="Įmonė" GridPane.rowIndex="1"/>
+            <Label fx:id="caretakerCompanyLabel" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+            <Label text="Apie save" GridPane.rowIndex="2"/>
+            <TextArea fx:id="bioArea" prefRowCount="3" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+        </GridPane>
+    </VBox>
+
+    <!-- ======== Company manager only ======== -->
+    <VBox fx:id="managerFields" managed="false" spacing="8.0" visible="false">
+        <Separator/>
+        <GridPane hgap="8.0" vgap="8.0">
+            <columnConstraints>
+                <ColumnConstraints minWidth="150.0"/>
+                <ColumnConstraints prefWidth="280.0"/>
+            </columnConstraints>
+            <Label text="Įmonė *" GridPane.rowIndex="0"/>
+            <ComboBox fx:id="companyBox" maxWidth="Infinity" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+        </GridPane>
+    </VBox>
+
+    <HBox alignment="CENTER_RIGHT" spacing="8.0">
+        <padding>
+            <Insets top="6.0"/>
+        </padding>
+        <Button fx:id="saveButton" defaultButton="true" onAction="#onSave" text="Išsaugoti"/>
+        <Button fx:id="cancelButton" cancelButton="true" onAction="#onCancel" text="Atšaukti"/>
+    </HBox>
+</VBox>

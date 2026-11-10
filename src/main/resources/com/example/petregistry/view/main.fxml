@@ -39,10 +39,10 @@
     </top>
 
     <center>
-        <TabPane tabClosingPolicy="UNAVAILABLE">
+        <TabPane fx:id="tabPane" tabClosingPolicy="UNAVAILABLE">
             <tabs>
                 <!-- Each tab is its own FXML + controller. fx:id "usersTab" -> field "usersTabController" -->
-                <Tab text="Vartotojai">
+                <Tab fx:id="usersTabItem" text="Vartotojai">
                     <content>
                         <fx:include fx:id="usersTab" source="users-tab.fxml"/>
                     </content>
@@ -57,7 +57,7 @@
                         <fx:include fx:id="servicesTab" source="services-tab.fxml"/>
                     </content>
                 </Tab>
-                <Tab text="Gyvūnai">
+                <Tab fx:id="petsTabItem" text="Gyvūnai">
                     <content>
                         <fx:include fx:id="petsTab" source="pets-tab.fxml"/>
                     </content>

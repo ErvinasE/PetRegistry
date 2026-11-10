@@ -5,20 +5,38 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.stage.Window;
 
 /** Controller for main.fxml: the menu bar, the tabs and the status bar. */
 public class MainController {
 
     // FXMLLoader fills these from <fx:include fx:id="usersTab" .../>: the field name must be fx:id + "Controller".
-    // Not used yet. M7+ refreshes other tabs after a change, and M11 refreshes all tabs after connecting.
+    // M11 will also refresh all tabs after connecting to the database.
     @FXML private UsersTabController usersTabController;
     @FXML private CompaniesTabController companiesTabController;
     @FXML private ServicesTabController servicesTabController;
     @FXML private PetsTabController petsTabController;
     @FXML private ReservationsTabController reservationsTabController;
 
+    @FXML private TabPane tabPane;
+    @FXML private Tab usersTabItem;
+    @FXML private Tab petsTabItem;
     @FXML private Label statusLabel;
+
+    @FXML
+    private void initialize() {
+        // Tabs share data: deleting an owner in Users also deletes their pets.
+        // So a tab reloads its data every time it is opened, and never shows stale rows.
+        tabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldTab, newTab) -> {
+            if (newTab == usersTabItem) {
+                usersTabController.refresh();
+            } else if (newTab == petsTabItem) {
+                petsTabController.refresh();
+            }
+        });
+    }
 
     /** Pagalba → Apie */
     @FXML

@@ -58,11 +58,20 @@ public class PetFormController {
     /**
      * Opens the form as a modal window and waits until it is closed.
      *
-     * @param owner the window to open on top of
-     * @param pet   the pet to edit, or null for a new one
+     * @param parent the window to open on top of
+     * @param pet    the pet to edit, or null for a new one
      * @return the saved pet, or null if the user cancelled
      */
-    public static Pet open(Window owner, Pet pet) {
+    public static Pet open(Window parent, Pet pet) {
+        return open(parent, pet, null);
+    }
+
+    /**
+     * Same, but with the owner already chosen and locked (used by the owner's pet list in the Users form).
+     *
+     * @param fixedOwner the owner to use, or null to let the user choose
+     */
+    public static Pet open(Window parent, Pet pet, PetOwner fixedOwner) {
         FXMLLoader loader = new FXMLLoader(PetFormController.class.getResource("/com/example/petregistry/view/pet-form.fxml"));
         Parent root;
         try {
@@ -73,9 +82,13 @@ public class PetFormController {
         }
         PetFormController form = loader.getController();
         form.fill(pet);
+        if (fixedOwner != null) {
+            form.ownerBox.setValue(fixedOwner);
+            form.ownerBox.setDisable(true);
+        }
 
         Stage stage = new Stage();
-        stage.initOwner(owner);
+        stage.initOwner(parent);
         stage.initModality(Modality.WINDOW_MODAL); // the main window is blocked while the form is open
         stage.setTitle(pet == null ? "Naujas gyvūnas" : "Redaguoti gyvūną");
         stage.setScene(new Scene(root));
