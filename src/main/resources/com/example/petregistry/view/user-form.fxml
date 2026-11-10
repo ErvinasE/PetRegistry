@@ -29,8 +29,8 @@
         </columnConstraints>
 
         <!-- Enabled only when creating: an existing object can't change its class (PetOwner → Caretaker) -->
-        <Label text="Rolė *" GridPane.rowIndex="0"/>
-        <ComboBox fx:id="roleBox" maxWidth="Infinity" promptText="Pasirinkite rolę"
+        <Label text="Pareigos *" GridPane.rowIndex="0"/>
+        <ComboBox fx:id="roleBox" maxWidth="Infinity" promptText="Pasirinkite pareigas"
                   GridPane.columnIndex="1" GridPane.rowIndex="0"/>
 
         <Label text="Prisijungimo vardas *" GridPane.rowIndex="1"/>

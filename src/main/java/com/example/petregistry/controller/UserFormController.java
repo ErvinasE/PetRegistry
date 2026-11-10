@@ -192,7 +192,7 @@ public class UserFormController {
         Role role = roleBox.getValue();
         Map<String, String> formErrors = new LinkedHashMap<>();
         if (role == null) {
-            formErrors.put("role", "Pasirinkite rolę");
+            formErrors.put("role", "Pasirinkite pareigas");
         }
         int experience = role == Role.CARETAKER ? parseExperience(formErrors) : 0;
 

@@ -99,9 +99,9 @@ public class M7Check {
         onFx(() -> {
             check("Vartotojai is the first tab and is open", tabs.getSelectionModel().getSelectedItem() == tabNamed("Vartotojai"));
             check("shows all " + seedUsers + " seed users", table.getItems().size() == seedUsers);
-            check("columns: Prisijungimo vardas, Vardas, pavardė, El. paštas, Telefonas, Rolė, Įmonė, Užblokuotas",
+            check("columns: Prisijungimo vardas, Vardas, pavardė, El. paštas, Telefonas, Pareigos, Įmonė, Užblokuotas",
                     table.getColumns().stream().map(TableColumn::getText).toList().equals(List.of(
-                            "Prisijungimo vardas", "Vardas, pavardė", "El. paštas", "Telefonas", "Rolė", "Įmonė", "Užblokuotas")));
+                            "Prisijungimo vardas", "Vardas, pavardė", "El. paštas", "Telefonas", "Pareigos", "Įmonė", "Užblokuotas")));
             check("Anna: full name cell (property 'fullName' → getFullName())", anna.getFullName().equals(cell(1, anna)));
             check("Anna: role shows the label 'Augintinio šeimininkas'", "Augintinio šeimininkas".equals(cell(4, anna)));
             check("Anna: no company", "".equals(cell(5, anna)));
@@ -153,7 +153,7 @@ public class M7Check {
         title("Naujas: save an empty form (all errors at once, even without a role)");
         String errors = save(f);
         check("6 messages: role, username, email, first name, last name, password", errors != null
-                && errors.split("\n").length == 6 && errors.contains("Pasirinkite rolę")
+                && errors.split("\n").length == 6 && errors.contains("Pasirinkite pareigas")
                 && errors.contains("Įveskite prisijungimo vardą") && errors.contains("Įveskite el. paštą")
                 && errors.contains("Įveskite vardą") && errors.contains("Įveskite pavardę")
                 && errors.contains("Slaptažodis turi būti bent 8 simbolių"));
