@@ -59,7 +59,25 @@ public class ServiceService {
         return true;
     }
 
-    private void validate(Service service, Company company) {
+    /**
+     * The "Laikinai neteikiama" button: ACTIVE <-> TEMPORARILY_UNAVAILABLE.
+     * An INACTIVE service can't be paused: the model throws IllegalStateException,
+     * and we turn it into a rule message the UI can show.
+     */
+    public void setTemporarilyUnavailable(Service service, boolean flag) {
+        try {
+            service.setTemporarilyUnavailable(flag);
+        } catch (IllegalStateException e) {
+            throw new BusinessRuleException(e.getMessage());
+        }
+        Repositories.services().update(service);
+    }
+
+    /**
+     * Checks the service without saving anything. create/update call it too.
+     * Public so the form can check a draft copy BEFORE it changes the stored service.
+     */
+    public void validate(Service service, Company company) {
         Map<String, String> errors = new LinkedHashMap<>();
         if (isBlank(service.getTitle())) {
             errors.put("title", "Įveskite pavadinimą");

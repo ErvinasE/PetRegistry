@@ -22,6 +22,8 @@ public class MainController {
 
     @FXML private TabPane tabPane;
     @FXML private Tab usersTabItem;
+    @FXML private Tab companiesTabItem;
+    @FXML private Tab servicesTabItem;
     @FXML private Tab petsTabItem;
     @FXML private Label statusLabel;
 
@@ -32,6 +34,10 @@ public class MainController {
         tabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldTab, newTab) -> {
             if (newTab == usersTabItem) {
                 usersTabController.refresh();
+            } else if (newTab == companiesTabItem) {
+                companiesTabController.refresh();
+            } else if (newTab == servicesTabItem) {
+                servicesTabController.refresh();
             } else if (newTab == petsTabItem) {
                 petsTabController.refresh();
             }

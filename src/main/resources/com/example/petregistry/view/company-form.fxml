@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane prefWidth="480.0" stylesheets="@style.css"
+            xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.petregistry.controller.CompanyFormController">
+    <padding>
+        <Insets bottom="12.0" left="12.0" right="12.0" top="12.0"/>
+    </padding>
+
+    <center>
+        <TabPane fx:id="innerTabs" tabClosingPolicy="UNAVAILABLE">
+            <tabs>
+                <!-- ======== Duomenys: the company's own fields. "*" = required. ======== -->
+                <Tab text="Duomenys">
+                    <content>
+                        <GridPane hgap="8.0" vgap="8.0">
+                            <padding>
+                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                            </padding>
+                            <columnConstraints>
+                                <ColumnConstraints minWidth="110.0"/>
+                                <ColumnConstraints prefWidth="300.0"/>
+                            </columnConstraints>
+
+                            <Label text="Pavadinimas *" GridPane.rowIndex="0"/>
+                            <TextField fx:id="nameField" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+                            <Label text="Įmonės kodas *" GridPane.rowIndex="1"/>
+                            <TextField fx:id="codeField" promptText="9 skaitmenys" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+                            <Label text="Miestas *" GridPane.rowIndex="2"/>
+                            <TextField fx:id="cityField" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+
+                            <Label text="Adresas" GridPane.rowIndex="3"/>
+                            <TextField fx:id="addressField" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+
+                            <CheckBox fx:id="activeCheck" selected="true" text="Aktyvi" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+                        </GridPane>
+                    </content>
+                </Tab>
+
+                <!-- ======== Paslaugos: the company's parts (composition). Disabled until the company is saved. ======== -->
+                <Tab fx:id="servicesTab" disable="true" text="Paslaugos">
+                    <content>
+                        <VBox spacing="6.0">
+                            <padding>
+                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                            </padding>
+                            <Label text="Pakeitimai išsaugomi iš karto"/>
+                            <ListView fx:id="servicesList" prefHeight="180.0"/>
+                            <HBox spacing="6.0">
+                                <Button onAction="#onAddService" text="Pridėti paslaugą"/>
+                                <Button onAction="#onRemoveService" text="Pašalinti paslaugą"/>
+                            </HBox>
+                        </VBox>
+                    </content>
+                </Tab>
+
+                <!-- ======== Prižiūrėtojai: employed caretakers (aggregation: they exist without the company) ======== -->
+                <Tab fx:id="caretakersTab" disable="true" text="Prižiūrėtojai">
+                    <content>
+                        <VBox spacing="6.0">
+                            <padding>
+                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                            </padding>
+                            <Label text="Dirba įmonėje (pakeitimai išsaugomi iš karto)"/>
+                            <ListView fx:id="caretakersList" prefHeight="140.0"/>
+                            <Button onAction="#onReleaseCaretaker" text="Atsieti"/>
+                            <Label text="Nepriklausomi prižiūrėtojai"/>
+                            <HBox spacing="6.0">
+                                <ComboBox fx:id="freeCaretakerBox" maxWidth="Infinity" promptText="Pasirinkite prižiūrėtoją"
+                                          HBox.hgrow="ALWAYS"/>
+                                <Button onAction="#onHireCaretaker" text="Priskirti"/>
+                            </HBox>
+                        </VBox>
+                    </content>
+                </Tab>
+            </tabs>
+        </TabPane>
+    </center>
+
+    <bottom>
+        <HBox alignment="CENTER_LEFT" spacing="8.0">
+            <padding>
+                <Insets top="12.0"/>
+            </padding>
+            <Label fx:id="hintLabel" style="-fx-text-fill: grey;" wrapText="true" maxWidth="260.0"/>
+            <!-- An empty Region that grows: pushes the buttons to the right -->
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button fx:id="saveButton" defaultButton="true" onAction="#onSave" text="Išsaugoti"/>
+            <Button fx:id="closeButton" cancelButton="true" onAction="#onClose" text="Uždaryti"/>
+        </HBox>
+    </bottom>
+</BorderPane>

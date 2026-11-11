@@ -47,12 +47,12 @@
                         <fx:include fx:id="usersTab" source="users-tab.fxml"/>
                     </content>
                 </Tab>
-                <Tab text="Įmonės">
+                <Tab fx:id="companiesTabItem" text="Įmonės">
                     <content>
                         <fx:include fx:id="companiesTab" source="companies-tab.fxml"/>
                     </content>
                 </Tab>
-                <Tab text="Paslaugos">
+                <Tab fx:id="servicesTabItem" text="Paslaugos">
                     <content>
                         <fx:include fx:id="servicesTab" source="services-tab.fxml"/>
                     </content>

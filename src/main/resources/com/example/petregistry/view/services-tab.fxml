@@ -1,12 +1,93 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
 
-<!-- M8 replaces the placeholder with the filter bar, table and buttons -->
 <BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.example.petregistry.controller.ServicesTabController">
+
+    <!-- Filter bar. An empty filter means "don't filter by this". -->
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="8.0">
+            <padding>
+                <Insets bottom="8.0" left="8.0" right="8.0" top="8.0"/>
+            </padding>
+            <Label text="Tipas:"/>
+            <ComboBox fx:id="typeFilter" prefWidth="170.0" promptText="Visi"/>
+            <Label text="Įmonė:"/>
+            <ComboBox fx:id="companyFilter" prefWidth="150.0" promptText="Visos"/>
+            <Label text="Kaina nuo:"/>
+            <TextField fx:id="minPriceFilter" onAction="#onSearch" prefWidth="70.0"/>
+            <Label text="iki:"/>
+            <TextField fx:id="maxPriceFilter" onAction="#onSearch" prefWidth="70.0"/>
+            <Button onAction="#onSearch" text="Ieškoti"/>
+            <Button onAction="#onShowAll" text="Rodyti visus"/>
+        </HBox>
+    </top>
+
     <center>
-        <Label text="Paslaugų sąrašas (M8)"/>
+        <TableView fx:id="table">
+            <placeholder>
+                <Label text="Paslaugų nerasta"/>
+            </placeholder>
+            <columnResizePolicy>
+                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN"/>
+            </columnResizePolicy>
+            <columns>
+                <TableColumn text="Pavadinimas">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="title"/>
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn text="Tipas">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="type"/>
+                    </cellValueFactory>
+                </TableColumn>
+                <!-- A nested value (service.getCompany().getName()): set in the controller with a lambda -->
+                <TableColumn fx:id="companyColumn" text="Įmonė"/>
+                <TableColumn text="Kaina (€)">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="price"/>
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn text="Trukmė (min.)">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="durationMinutes"/>
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn text="Vieta">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="location"/>
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn text="Būsena">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="status"/>
+                    </cellValueFactory>
+                </TableColumn>
+            </columns>
+        </TableView>
     </center>
+
+    <bottom>
+        <HBox spacing="8.0">
+            <padding>
+                <Insets bottom="8.0" left="8.0" right="8.0" top="8.0"/>
+            </padding>
+            <Button onAction="#onNew" text="Nauja"/>
+            <Button onAction="#onEdit" text="Redaguoti"/>
+            <Button onAction="#onDelete" text="Šalinti"/>
+            <!-- The text changes with the selected row: "Laikinai neteikiama" or "Vėl teikti" -->
+            <Button fx:id="pauseButton" onAction="#onTogglePaused" text="Laikinai neteikiama"/>
+        </HBox>
+    </bottom>
 </BorderPane>

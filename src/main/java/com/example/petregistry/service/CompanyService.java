@@ -63,7 +63,26 @@ public class CompanyService {
         Repositories.companies().delete(company.getId());
     }
 
-    private void validate(Company company) {
+    /**
+     * The caretaker joins this company (both sides are linked).
+     * The caretaker's record holds the company (in LAB2: users.company_id), so the caretaker is what gets saved.
+     */
+    public void hireCaretaker(Company company, Caretaker caretaker) {
+        company.hireCaretaker(caretaker);
+        Repositories.users().update(caretaker);
+    }
+
+    /** The caretaker leaves the company but stays in Users, as an independent caretaker. */
+    public void releaseCaretaker(Company company, Caretaker caretaker) {
+        company.releaseCaretaker(caretaker);
+        Repositories.users().update(caretaker);
+    }
+
+    /**
+     * Checks the company without saving anything. create/update call it too.
+     * Public so the form can check a draft copy BEFORE it changes the stored company.
+     */
+    public void validate(Company company) {
         Map<String, String> errors = new LinkedHashMap<>();
         if (isBlank(company.getName())) {
             errors.put("name", "Įveskite įmonės pavadinimą");
