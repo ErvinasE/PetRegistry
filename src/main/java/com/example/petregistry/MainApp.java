@@ -16,14 +16,12 @@ public class MainApp extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        // The app starts with data in memory. Duomenų bazė → Prisijungti… switches to MySQL (LAB2).
+        // The app starts with data in memory; Prisijungti… switches to MySQL.
         // The averages are computed from the seed reviews once.
         Repositories.useMemory();
         new ReviewService().refreshAllAverages();
 
-        // Safety net: an error that no controller caught (e.g. the database connection was lost)
-        // becomes an error alert, instead of a stack trace in the console and a button that "does nothing".
-        // start() runs on the JavaFX thread, so this handler covers every button click.
+        // Safety net: an uncaught error becomes an error alert instead of a stack trace.
         Thread.currentThread().setUncaughtExceptionHandler((thread, error) ->
                 Dialogs.error(stage, "Netikėta klaida", messageOf(error)));
 
@@ -32,7 +30,6 @@ public class MainApp extends Application {
         MainController controller = loader.getController();
 
         // The window's X asks the same question as Failas → Išeiti.
-        // consume() = "cancel this close", so the window stays open on "Ne".
         stage.setOnCloseRequest(event -> {
             if (!controller.confirmExit()) {
                 event.consume();
@@ -50,11 +47,7 @@ public class MainApp extends Application {
         DatabaseManager.disconnect();
     }
 
-    /**
-     * The most useful text of an error. JavaFX wraps errors from button handlers in other exceptions,
-     * so we walk down the "cause" chain. Our own exceptions (e.g. DataAccessException) already have a
-     * readable Lithuanian message, so the first one wins. Otherwise we keep the deepest message.
-     */
+    /** The most useful text of an error: the first readable message in the cause chain wins, else the deepest. */
     private static String messageOf(Throwable error) {
         String message = null;
         for (Throwable t = error; t != null; t = t.getCause()) {

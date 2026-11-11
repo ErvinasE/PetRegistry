@@ -33,10 +33,7 @@ public class ReservationService {
         return Repositories.reservations().search(status, ownerId, from, to);
     }
 
-    /**
-     * end = start + service duration. The price is COPIED from the service now,
-     * so a later price change doesn't rewrite old bookings.
-     */
+    /** end = start + service duration. The price is COPIED from the service, so later price changes don't rewrite old bookings. */
     public Reservation create(Reservation reservation) {
         validate(reservation);
         reservation.setEnd(endOf(reservation));
@@ -67,11 +64,7 @@ public class ReservationService {
         targets.forEach(reviewService::refreshAverage);
     }
 
-    /**
-     * The "Keisti būseną" button. The model method (confirm(), start() ...) checks the transition table
-     * and throws IllegalStateException on a wrong move. We turn that into a rule message for the UI.
-     * No validate() here: changing the status is not a form edit (an IN_PROGRESS visit has a past start).
-     */
+    /** The "Keisti būseną" button. The model checks the transition table; we turn its IllegalStateException into a rule message. */
     public void changeStatus(Reservation reservation, ReservationStatus target) {
         try {
             switch (target) {
@@ -92,10 +85,7 @@ public class ReservationService {
         return reservation.getStart().plusMinutes(reservation.getService().getDurationMinutes());
     }
 
-    /**
-     * Checks the reservation without saving anything. create/update call it too.
-     * Public so the form can check a draft copy BEFORE it changes the stored reservation.
-     */
+    /** Checks the reservation without saving. Public so the form can check a draft copy. */
     public void validate(Reservation reservation) {
         Map<String, String> errors = new LinkedHashMap<>();
         PetOwner owner = reservation.getOwner();
@@ -103,8 +93,7 @@ public class ReservationService {
         Service service = reservation.getService();
         Caretaker caretaker = reservation.getCaretaker();
         LocalDateTime start = reservation.getStart();
-        // "service ACTIVE" and "start in the future" only make sense before the visit starts.
-        // Otherwise an old COMPLETED reservation could never be edited again.
+        // "service ACTIVE" and "start in the future" only apply before the visit starts.
         boolean notStartedYet = reservation.getStatus() == ReservationStatus.PENDING
                 || reservation.getStatus() == ReservationStatus.CONFIRMED;
 

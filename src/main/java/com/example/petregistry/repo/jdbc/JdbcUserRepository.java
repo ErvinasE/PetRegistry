@@ -23,11 +23,7 @@ import java.util.Optional;
  */
 public class JdbcUserRepository implements UserRepository {
 
-    /**
-     * Every user query starts like this. avg_rating = the user's average from ACTIVE reviews,
-     * calculated by SQL (AVG) on every read. It is not a column, so it can never be out of date.
-     * AVG of no rows is NULL, and getDouble() reads NULL as 0.
-     */
+    /** Every user query starts like this. avg_rating is calculated by SQL from ACTIVE reviews (NULL → 0), so it is never out of date. */
     private static final String SELECT = """
             SELECT u.*,
                    (SELECT AVG(r.rating) FROM reviews r WHERE r.target_user_id = u.id AND r.active) AS avg_rating
@@ -136,11 +132,7 @@ public class JdbcUserRepository implements UserRepository {
 
     // ----------------------------------------------------------------- for the other JDBC repositories
 
-    /**
-     * A user with only their own columns: no pets, no company. Used where a user is a PART of something
-     * else (a pet's owner, a company's caretakers, a review's author). Loading their links too would go
-     * in circles: caretaker → company → caretakers → company → ...
-     */
+    /** A user with only their own columns, no pets or company: loading the links too would go in circles. */
     static Optional<User> findPlain(int id) {
         return Sql.one(SELECT + " WHERE u.id = ?", JdbcUserRepository::mapRow, id);
     }
@@ -184,10 +176,7 @@ public class JdbcUserRepository implements UserRepository {
         return user;
     }
 
-    /**
-     * mapRow + the links, with one extra query each. The add methods keep both sides in sync:
-     * owner.addPet(pet) also sets pet.owner; company.hireCaretaker(c) also sets c.company.
-     */
+    /** mapRow + the links, one extra query each. */
     private static User mapFull(ResultSet rs) throws SQLException {
         User user = mapRow(rs);
         Integer companyId = Sql.nullableInt(rs, "company_id");

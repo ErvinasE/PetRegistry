@@ -52,8 +52,7 @@ public class CompanyService {
             throw new BusinessRuleException("Įmonės „" + company.getName()
                     + "“ pašalinti negalima: jos paslaugos turi rezervacijų");
         }
-        // One transaction: all steps are saved together, or none (e.g. no services deleted
-        // while the company itself stays).
+        // One transaction: all steps are saved together, or none.
         Repositories.inTransaction(() -> {
             for (Service service : new ArrayList<>(company.getServices())) {
                 company.removeService(service);
@@ -61,16 +60,13 @@ public class CompanyService {
             }
             for (Caretaker caretaker : new ArrayList<>(company.getCaretakers())) {
                 company.releaseCaretaker(caretaker);
-                Repositories.users().update(caretaker); // the caretaker stays, now without a company
+                Repositories.users().update(caretaker);
             }
             Repositories.companies().delete(company.getId());
         });
     }
 
-    /**
-     * The caretaker joins this company (both sides are linked).
-     * The caretaker's record holds the company (in LAB2: users.company_id), so the caretaker is what gets saved.
-     */
+    /** The caretaker joins this company (both sides are linked). */
     public void hireCaretaker(Company company, Caretaker caretaker) {
         company.hireCaretaker(caretaker);
         Repositories.users().update(caretaker);
@@ -82,10 +78,7 @@ public class CompanyService {
         Repositories.users().update(caretaker);
     }
 
-    /**
-     * Checks the company without saving anything. create/update call it too.
-     * Public so the form can check a draft copy BEFORE it changes the stored company.
-     */
+    /** Checks the company without saving. Public so the form can check a draft copy. */
     public void validate(Company company) {
         Map<String, String> errors = new LinkedHashMap<>();
         if (isBlank(company.getName())) {

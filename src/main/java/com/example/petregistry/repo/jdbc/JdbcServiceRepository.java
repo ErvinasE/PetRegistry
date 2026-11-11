@@ -36,10 +36,7 @@ public class JdbcServiceRepository implements ServiceRepository {
         return Sql.one(SELECT + " WHERE s.id = ?", JdbcServiceRepository::mapFull, id);
     }
 
-    /**
-     * One service = 1 row in services + N rows in service_species + M rows in service_sizes.
-     * A transaction makes it all-or-nothing: we never keep a service without its species.
-     */
+    /** One service = 1 row in services + rows in service_species and service_sizes, in one transaction. */
     @Override
     public Service create(Service service) {
         DatabaseManager.inTransaction(() -> {

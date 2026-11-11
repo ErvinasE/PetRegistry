@@ -97,10 +97,7 @@ public class CompaniesTabController {
         }
     }
 
-    /**
-     * Always reloads after the window closes: services and caretakers are saved right away inside it,
-     * so something may have changed even if the user pressed "Uždaryti".
-     */
+    /** Always reloads after the window closes: services and caretakers are saved inside it. */
     private void openForm(Company company) {
         Company result = CompanyFormController.open(window(), company);
         refresh();

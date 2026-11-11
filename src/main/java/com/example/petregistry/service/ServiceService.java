@@ -14,7 +14,7 @@ import java.util.Map;
 import static com.example.petregistry.service.Checks.isBlank;
 import static com.example.petregistry.service.Checks.throwIfAny;
 
-/** Service for the model class Service (the name is awkward, but it follows "one service per class"). */
+/** Service for the model class Service. */
 public class ServiceService {
 
     private static final BigDecimal MAX_PRICE = new BigDecimal("10000");
@@ -36,7 +36,7 @@ public class ServiceService {
 
     /**
      * Validates, links the service to its company (both sides), then saves it.
-     * Link BEFORE saving: in LAB2 the INSERT needs service.getCompany().getId() for company_id.
+     * Linking comes first: the INSERT needs the company id.
      */
     public Service create(Service service, Company company) {
         validate(service, company);
@@ -70,11 +70,7 @@ public class ServiceService {
         return true;
     }
 
-    /**
-     * The "Laikinai neteikiama" button: ACTIVE <-> TEMPORARILY_UNAVAILABLE.
-     * An INACTIVE service can't be paused: the model throws IllegalStateException,
-     * and we turn it into a rule message the UI can show.
-     */
+    /** The "Laikinai neteikiama" button: ACTIVE <-> TEMPORARILY_UNAVAILABLE. An INACTIVE service can't be paused. */
     public void setTemporarilyUnavailable(Service service, boolean flag) {
         try {
             service.setTemporarilyUnavailable(flag);
@@ -84,10 +80,7 @@ public class ServiceService {
         Repositories.services().update(service);
     }
 
-    /**
-     * Checks the service without saving anything. create/update call it too.
-     * Public so the form can check a draft copy BEFORE it changes the stored service.
-     */
+    /** Checks the service without saving. Public so the form can check a draft copy. */
     public void validate(Service service, Company company) {
         Map<String, String> errors = new LinkedHashMap<>();
         if (isBlank(service.getTitle())) {

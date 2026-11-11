@@ -61,14 +61,11 @@ public class ServiceFormController {
     @FXML private FlowPane speciesPane;
     @FXML private FlowPane sizesPane;
 
-    // One CheckBox per enum value, made in code. EnumMap = a map whose keys are enum values (fast, keeps enum order).
+    // One CheckBox per enum value, made in code.
     private final Map<Species, CheckBox> speciesChecks = new EnumMap<>(Species.class);
     private final Map<PetSize, CheckBox> sizeChecks = new EnumMap<>(PetSize.class);
 
-    /**
-     * Field name in ValidationException → the node to mark red.
-     * Node, not Control: the check box groups are FlowPanes, which are not Controls.
-     */
+    /** Field name in ValidationException → the node to mark red. */
     private final Map<String, Node> fieldNodes = new LinkedHashMap<>();
 
     private Service service;  // the service being edited (the stored object), or a new one
@@ -145,15 +142,11 @@ public class ServiceFormController {
         fieldNodes.put("allowedSizes", sizesPane);
     }
 
-    /**
-     * The value factory is the spinner's "model": it holds the number and knows min, max and step.
-     * The arrows move by 15. Typing is allowed too, so the service still checks "multiple of 15".
-     */
+    /** The arrows move by 15. Typing is allowed too, so the service still checks "multiple of 15". */
     private void setUpDurationSpinner() {
         SpinnerValueFactory.IntegerSpinnerValueFactory factory = new SpinnerValueFactory.IntegerSpinnerValueFactory(
                 MIN_DURATION, MAX_DURATION, DEFAULT_DURATION, DURATION_STEP);
-        // The default converter throws NumberFormatException when the typed text is not a number
-        // and the spinner loses focus (a stack trace in the console). This one keeps the old value instead.
+        // The default converter throws NumberFormatException on bad text; this one keeps the old value.
         factory.setConverter(new StringConverter<>() {
             @Override
             public String toString(Integer value) {
@@ -194,10 +187,8 @@ public class ServiceFormController {
     }
 
     /**
-     * Same pattern as the pet form:
-     * 1. Read the fields into a DRAFT service (stored nowhere) and check it. A bad number is a form error.
-     * 2. Any errors → show them all, mark the fields red, change nothing.
-     * 3. No errors → copy the values into the real service and call create / update.
+     * Reads the fields into a DRAFT service and checks it. On errors: show them all and change nothing.
+     * On success: copy the values into the real service and call create / update.
      */
     @FXML
     private void onSave() {
@@ -205,8 +196,7 @@ public class ServiceFormController {
         Map<String, String> formErrors = new LinkedHashMap<>();
         BigDecimal price = parsePrice(formErrors);
         int duration = parseDuration(formErrors);
-        // The fixed company is used as it is: companyBox.getValue() may be an equal COPY of it
-        // (in LAB2 the list holds fresh objects from the DB), and the company window must see the new service.
+        // Use the fixed company itself: companyBox.getValue() may be an equal copy, and the company window must see the new service.
         Company company = fixedCompany != null ? fixedCompany : companyBox.getValue();
 
         Service draft = new Service();
@@ -286,10 +276,7 @@ public class ServiceFormController {
         }
     }
 
-    /**
-     * Reads the text the user SEES in the spinner, not spinner.getValue():
-     * if they typed "abc", the value is still the old number, and saving it would hide their mistake.
-     */
+    /** Reads the text the user SEES, not spinner.getValue(): after typing "abc" the value is still the old number. */
     private int parseDuration(Map<String, String> formErrors) {
         String text = durationSpinner.getEditor().getText().trim();
         try {

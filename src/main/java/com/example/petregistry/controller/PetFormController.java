@@ -91,7 +91,7 @@ public class PetFormController {
 
         Stage stage = new Stage();
         stage.initOwner(parent);
-        stage.initModality(Modality.WINDOW_MODAL); // the main window is blocked while the form is open
+        stage.initModality(Modality.WINDOW_MODAL);
         stage.setTitle(pet == null ? "Naujas gyvūnas" : "Redaguoti gyvūną");
         stage.setScene(new Scene(root));
         stage.showAndWait();
@@ -129,10 +129,8 @@ public class PetFormController {
     }
 
     /**
-     * 1. Read the fields into a DRAFT pet (not stored anywhere) and check it. A bad number is a form error.
-     * 2. Any errors → show them all, mark the fields red, change nothing.
-     * 3. No errors → copy the values into the real pet and call create / update.
-     * The stored pet is only touched in step 3, so a refused edit leaves no bad values behind.
+     * Reads the fields into a DRAFT pet and checks it. On errors: show them all and change nothing.
+     * On success: copy the values into the real pet and call create / update.
      */
     @FXML
     private void onSave() {
@@ -142,8 +140,7 @@ public class PetFormController {
 
         Pet draft = new Pet();
         copyFormInto(draft, weight);
-        // The fixed owner is used as it is: ownerBox.getValue() may be an equal COPY of it
-        // (in LAB2 the list holds fresh objects from the DB), and the owner's pet list must see the new pet.
+        // Use the fixed owner itself: ownerBox.getValue() may be an equal copy, and the owner's pet list must see the new pet.
         PetOwner owner = fixedOwner != null ? fixedOwner : ownerBox.getValue();
 
         Map<String, String> errors = new LinkedHashMap<>();
@@ -192,7 +189,7 @@ public class PetFormController {
         chooser.getExtensionFilters().add(
                 new FileChooser.ExtensionFilter("Paveikslėliai", "*.png", "*.jpg", "*.jpeg", "*.gif"));
         File file = chooser.showOpenDialog(window());
-        if (file != null) { // null = the user pressed Cancel
+        if (file != null) {
             photoPath = file.getAbsolutePath();
             showPhoto(photoPath);
         }

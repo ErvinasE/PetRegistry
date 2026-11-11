@@ -12,13 +12,11 @@ import java.util.Optional;
 /** Small alerts used by every screen. Each one opens on top of its owner window and waits for the user. */
 public final class Dialogs {
 
-    // Lithuanian button texts (the built-in YES/NO would show English "Yes"/"No").
-    // CANCEL_CLOSE also makes the dialog's X mean "Ne".
+    // Lithuanian button texts; CANCEL_CLOSE makes the dialog's X mean "Ne".
     public static final ButtonType YES = new ButtonType("Taip", ButtonBar.ButtonData.OK_DONE);
     public static final ButtonType NO = new ButtonType("Ne", ButtonBar.ButtonData.CANCEL_CLOSE);
 
     private Dialogs() {
-        // only static methods
     }
 
     public static void info(Window owner, String title, String text) {
@@ -38,17 +36,13 @@ public final class Dialogs {
         return alert.showAndWait().filter(answer -> answer == YES).isPresent();
     }
 
-    /**
-     * Lets the user pick one of the choices from a drop-down list.
-     * Returns the chosen value, or empty if the user pressed "Atšaukti" (or closed the dialog).
-     */
+    /** Drop-down choice. Returns the chosen value, or empty if the user cancels. */
     public static <T> Optional<T> choose(Window owner, String title, String text, List<T> choices) {
         ChoiceDialog<T> dialog = new ChoiceDialog<>(choices.get(0), choices);
         dialog.initOwner(owner);
         dialog.setTitle(title);
         dialog.setHeaderText(null);
         dialog.setContentText(text);
-        // ChoiceDialog returns the selected item for any OK_DONE button, so our own Lithuanian buttons work.
         dialog.getDialogPane().getButtonTypes().setAll(
                 new ButtonType("Gerai", ButtonBar.ButtonData.OK_DONE),
                 new ButtonType("Atšaukti", ButtonBar.ButtonData.CANCEL_CLOSE));

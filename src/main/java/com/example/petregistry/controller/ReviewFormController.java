@@ -80,7 +80,7 @@ public class ReviewFormController {
         authorBox.valueProperty().addListener((observable, oldAuthor, newAuthor) -> {
             List<Rateable> targets = reviewService.allowedTargets(newAuthor, reservation);
             targetBox.getItems().setAll(targets);
-            targetBox.setValue(targets.size() == 1 ? targets.get(0) : null); // one choice → choose it
+            targetBox.setValue(targets.size() == 1 ? targets.get(0) : null);
             boolean caretaker = newAuthor instanceof Caretaker;
             behaviorBox.setDisable(!caretaker);
             if (!caretaker) {
@@ -103,10 +103,7 @@ public class ReviewFormController {
         }
     }
 
-    /**
-     * No draft needed here: the review is new and stored nowhere yet, and
-     * ReviewService.create() validates BEFORE it links or saves anything.
-     */
+    /** No draft needed: the review is new, and ReviewService.create() validates before saving. */
     @FXML
     private void onSave() {
         fieldControls.values().forEach(control -> control.getStyleClass().removeAll("error"));

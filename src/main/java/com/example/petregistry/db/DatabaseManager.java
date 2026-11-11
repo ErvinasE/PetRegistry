@@ -5,25 +5,19 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 /**
- * Holds the ONE shared database connection of the app (LAB2).
- * Opening a connection is slow (network + login), so we open it once on "Prisijungti…"
- * and reuse it for every query until "Atsijungti" or app exit.
- * That is why the JDBC repositories never close it (no try-with-resources on the connection).
+ * Holds the one shared database connection of the app.
+ * It is opened on "Prisijungti…" and reused until "Atsijungti" or exit, so the repositories never close it.
  */
 public final class DatabaseManager {
 
     private static Connection connection;
 
     private DatabaseManager() {
-        // only static methods
     }
 
-    /**
-     * Opens the connection. A wrong password, a stopped server or a missing database
-     * throws DataAccessException with a readable message, and the app stays in memory mode.
-     */
+    /** Opens the connection. On failure throws DataAccessException and the app stays in memory mode. */
     public static void connect(String url, String user, String password) {
-        disconnect(); // never keep two connections
+        disconnect();
         try {
             connection = DriverManager.getConnection(url, user, password);
         } catch (SQLException e) {
@@ -62,11 +56,8 @@ public final class DatabaseManager {
     }
 
     /**
-     * Runs several SQL changes as ONE transaction: either all of them are saved, or none.
-     * autoCommit = true (the default) saves every statement at once. We turn it off, run the work,
-     * then commit() (save all) or, on any error, rollback() (undo all). finally turns autoCommit back on.
-     * If a transaction is already running (autoCommit is off), the work simply joins it,
-     * so a service transaction can call a repository method that also asks for a transaction.
+     * Runs several SQL changes as ONE transaction: commit all, or rollback all on an error.
+     * If a transaction is already running, the work joins it.
      */
     public static void inTransaction(Runnable work) {
         Connection c = getConnection();

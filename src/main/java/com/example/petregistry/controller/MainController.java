@@ -19,8 +19,7 @@ import java.util.Optional;
 /** Controller for main.fxml: the menu bar, the tabs and the status bar. */
 public class MainController {
 
-    // FXMLLoader fills these from <fx:include fx:id="usersTab" .../>: the field name must be fx:id + "Controller".
-    // refreshAllTabs() uses them after connecting to / disconnecting from the database.
+    // Filled by FXMLLoader: the field name must be fx:id + "Controller".
     @FXML private UsersTabController usersTabController;
     @FXML private CompaniesTabController companiesTabController;
     @FXML private ServicesTabController servicesTabController;
@@ -39,8 +38,7 @@ public class MainController {
 
     @FXML
     private void initialize() {
-        // Tabs share data: deleting an owner in Users also deletes their pets.
-        // So a tab reloads its data every time it is opened, and never shows stale rows.
+        // Tabs share data, so a tab reloads every time it is opened.
         tabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldTab, newTab) -> {
             if (newTab == usersTabItem) {
                 usersTabController.refresh();
@@ -56,16 +54,12 @@ public class MainController {
         });
     }
 
-    /**
-     * Duomenų bazė → Prisijungti…
-     * connect → switch the repositories to JDBC → reload every tab from the database → update menu and status.
-     * If reading fails (e.g. the tables were never created), we go back to memory, so the app stays usable.
-     */
+    /** Duomenų bazė → Prisijungti…: connect, switch to JDBC, reload every tab. If reading fails, go back to memory. */
     @FXML
     private void onConnect() {
         Optional<String> url = ConnectDialog.show(window());
         if (url.isEmpty()) {
-            return; // cancelled
+            return;
         }
         try {
             Repositories.useDatabase();
@@ -126,15 +120,12 @@ public class MainController {
         }
     }
 
-    /**
-     * Asks "Ar tikrai norite išeiti?" and returns true on "Taip".
-     * Public, because MainApp uses it too when the user clicks the window's X.
-     */
+    /** Asks "Ar tikrai norite išeiti?" and returns true on "Taip". Public: MainApp uses it too. */
     public boolean confirmExit() {
         return Dialogs.confirm(window(), "Išeiti", "Ar tikrai norite išeiti?");
     }
 
-    /** The main window, so alerts open on top of it (and in its centre). */
+    /** The main window, owner of the alerts. */
     private Window window() {
         return statusLabel.getScene().getWindow();
     }

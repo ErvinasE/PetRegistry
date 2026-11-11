@@ -27,7 +27,7 @@ public class ReviewService {
 
     /**
      * Validates, links the review to its reservation, saves it, and updates the target's average.
-     * Link BEFORE saving: in LAB2 the INSERT needs review.getReservation().getId() for reservation_id.
+     * Linking comes first: the INSERT needs the reservation id.
      */
     public Review create(Review review, Reservation reservation) {
         validate(review, reservation);
@@ -59,10 +59,7 @@ public class ReviewService {
         refreshAverage(review.getTarget());
     }
 
-    /**
-     * LAB1: the only place that sets averageRating. Average of the target's ACTIVE reviews, 0 if none.
-     * Call after every review create / remove / deactivate, and after deleting a reservation with reviews.
-     */
+    /** The only place that sets averageRating: average of the target's ACTIVE reviews, 0 if none. */
     public void refreshAverage(Rateable target) {
         if (target == null) {
             return;
@@ -125,10 +122,7 @@ public class ReviewService {
         throwIfAny(errors);
     }
 
-    /**
-     * Who this author may review in this reservation (the form fills its target list from here):
-     * the owner reviews the caretaker or the company; the caretaker reviews the owner.
-     */
+    /** Who this author may review in this reservation (fills the form's target list). */
     public List<Rateable> allowedTargets(User author, Reservation reservation) {
         List<Rateable> targets = new ArrayList<>();
         if (author == null || reservation == null) {

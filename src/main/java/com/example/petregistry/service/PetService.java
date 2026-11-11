@@ -25,7 +25,7 @@ public class PetService {
 
     /**
      * Validates, links the pet to its owner (both sides), then saves it.
-     * Link BEFORE saving: in LAB2 the INSERT needs pet.getOwner().getId() for owner_id.
+     * Linking comes first: the INSERT needs the owner id.
      */
     public Pet create(Pet pet, PetOwner owner) {
         validate(pet, owner);
@@ -54,10 +54,7 @@ public class PetService {
         Repositories.pets().delete(pet.getId());
     }
 
-    /**
-     * Checks the pet without saving anything. create/update call it too.
-     * Public so the form can check a draft copy BEFORE it changes the stored pet.
-     */
+    /** Checks the pet without saving. Public so the form can check a draft copy. */
     public void validate(Pet pet, PetOwner owner) {
         Map<String, String> errors = new LinkedHashMap<>();
         if (isBlank(pet.getName())) {

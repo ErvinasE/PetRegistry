@@ -136,10 +136,7 @@ public class ReservationsTabController {
         refresh();
     }
 
-    /**
-     * Keisti būseną: offers ONLY the moves the transition table allows from the current status.
-     * The model still checks the move again, so a wrong one can never get through.
-     */
+    /** Keisti būseną: offers only the moves the transition table allows. */
     @FXML
     private void onChangeStatus() {
         Reservation reservation = selectedOrWarn();
@@ -165,10 +162,7 @@ public class ReservationsTabController {
                 });
     }
 
-    /**
-     * Always reloads after the window closes: reviews are saved right away inside it,
-     * so something may have changed even if the user pressed "Uždaryti".
-     */
+    /** Always reloads after the window closes: reviews are saved inside it. */
     private void openForm(Reservation reservation) {
         Reservation result = ReservationFormController.open(window(), reservation);
         refresh();

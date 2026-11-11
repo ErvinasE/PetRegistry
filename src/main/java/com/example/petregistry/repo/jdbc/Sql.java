@@ -18,28 +18,21 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * The JDBC code every repository needs, written once.
- * Every query is a PreparedStatement: the SQL has "?" and the values are sent separately,
- * so a value like  ' OR 1=1 --  is just text, never SQL (no SQL injection).
- * try-with-resources closes the statement and the result set, NEVER the shared connection.
- * Package-private: only the repo.jdbc package uses it.
+ * The JDBC code every repository needs, written once. Every query is a PreparedStatement (no SQL injection).
+ * try-with-resources closes the statement and result set, never the shared connection.
  */
 final class Sql {
 
     private Sql() {
     }
 
-    /** Turns one row of a ResultSet into an object. Like a Go "scan" function. */
+    /** Turns one row of a ResultSet into an object. */
     @FunctionalInterface
     interface RowMapper<T> {
         T map(ResultSet rs) throws SQLException;
     }
 
-    /**
-     * SELECT many rows.
-     * Note: the mapper may run more queries (e.g. load a pet's owner) while we read the rows.
-     * That is safe with MySQL Connector/J: by default it reads the whole result into memory first.
-     */
+    /** SELECT many rows. The mapper may run more queries: safe, because Connector/J reads the whole result first. */
     static <T> List<T> list(String sql, RowMapper<T> mapper, Object... params) {
         try (PreparedStatement ps = DatabaseManager.getConnection().prepareStatement(sql)) {
             bind(ps, params);
@@ -93,10 +86,7 @@ final class Sql {
         }
     }
 
-    /**
-     * Puts each Java value into its "?" with the right setXxx method.
-     * JDBC counts from 1, not 0. Enums are stored by name(): Species.DOG → 'DOG'.
-     */
+    /** Puts each value into its "?" (JDBC counts from 1). Enums are stored by name(). */
     static void bind(PreparedStatement ps, Object... params) throws SQLException {
         for (int i = 0; i < params.length; i++) {
             int index = i + 1;

@@ -71,10 +71,7 @@ public class JdbcReservationRepository implements ReservationRepository {
         Sql.execute("DELETE FROM reservations WHERE id = ?", id);
     }
 
-    /**
-     * The date filter compares DATETIME values: from = that day 00:00, to = BEFORE the next day 00:00,
-     * so both days are included, like in the in-memory version.
-     */
+    /** The date filter includes both days: from = day 00:00, to = before the next day 00:00. */
     @Override
     public List<Reservation> search(ReservationStatus status, Integer ownerId, LocalDate from, LocalDate to) {
         StringBuilder sql = new StringBuilder(SELECT).append(" WHERE 1 = 1");
@@ -99,7 +96,6 @@ public class JdbcReservationRepository implements ReservationRepository {
         return Sql.list(sql.toString(), this::mapRow, params.toArray());
     }
 
-    // COUNT(*) in SQL: the database counts, and only one number comes back (not every row).
 
     @Override
     public int countByPet(int petId) {
@@ -128,7 +124,7 @@ public class JdbcReservationRepository implements ReservationRepository {
         reservation.setId(rs.getInt("id"));
         reservation.setStart(Sql.dateTime(rs, "start_at"));
         reservation.setEnd(Sql.dateTime(rs, "end_at"));
-        reservation.setStatus(Sql.enumOf(ReservationStatus.class, rs, "status")); // setStatus = "for loading only"
+        reservation.setStatus(Sql.enumOf(ReservationStatus.class, rs, "status"));
         reservation.setPrice(rs.getBigDecimal("price"));
         reservation.setCreatedAt(Sql.dateTime(rs, "created_at"));
 

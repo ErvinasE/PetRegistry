@@ -7,14 +7,9 @@ import javafx.scene.control.ListCell;
 public final class ComboBoxes {
 
     private ComboBoxes() {
-        // only static methods
     }
 
-    /**
-     * JavaFX quirk: after setValue(null) a ComboBox shows nothing, instead of its prompt text again.
-     * This "button cell" (the part that shows the chosen value) shows the prompt, in grey, whenever the value is empty.
-     * Use it on filter boxes that "Rodyti visus" clears.
-     */
+    /** After setValue(null) a ComboBox shows nothing; this button cell shows the prompt text instead. */
     public static <T> void showPromptWhenEmpty(ComboBox<T> box) {
         box.setButtonCell(new ListCell<>() {
             @Override

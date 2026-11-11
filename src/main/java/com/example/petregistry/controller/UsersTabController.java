@@ -51,7 +51,7 @@ public class UsersTabController {
             return row;
         });
 
-        // A listener: runs every time the selection changes, so the button always says what it will do.
+        // The button always says what it will do.
         table.getSelectionModel().selectedItemProperty()
                 .addListener((observable, oldUser, newUser) -> updateBlockButton(newUser));
 

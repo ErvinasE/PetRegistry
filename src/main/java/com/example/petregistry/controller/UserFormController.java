@@ -171,20 +171,15 @@ public class UserFormController {
         }
     }
 
-    /**
-     * visible=false only hides a node: it still takes its space, leaving a gap.
-     * managed=false also tells the parent layout to skip it, so the form closes up.
-     */
+    /** managed=false (not only visible=false) makes the form close up the gap. */
     private static void show(Node node, boolean shown) {
         node.setVisible(shown);
         node.setManaged(shown);
     }
 
     /**
-     * Same pattern as the pet form:
-     * 1. Read the fields into a DRAFT (a new object of the right class, stored nowhere) and check it.
-     * 2. Any errors → show them all, mark the fields red, change nothing.
-     * 3. No errors → copy the values into the real user and call create / update.
+     * Reads the fields into a DRAFT user and checks it. On errors: show them all and change nothing.
+     * On success: copy the values into the real user and call create / update.
      */
     @FXML
     private void onSave() {
@@ -244,10 +239,7 @@ public class UserFormController {
         }
     }
 
-    /**
-     * Removing a pet from its owner = deleting the pet: a pet can't exist without an owner (composition).
-     * The delete rule still applies: a pet with reservations stays.
-     */
+    /** Removing a pet deletes it (composition). A pet with reservations stays. */
     @FXML
     private void onRemovePet() {
         Pet pet = petsList.getSelectionModel().getSelectedItem();

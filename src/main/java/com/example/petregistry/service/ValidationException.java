@@ -4,11 +4,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-/**
- * Thrown by create/update when the input breaks a rule.
- * Holds ALL errors at once (field name -> message), so the form can show them together
- * and mark each bad field red.
- */
+/** Thrown by create/update. Holds ALL errors at once (field name -> message). */
 public class ValidationException extends RuntimeException {
 
     private final Map<String, String> errors;

@@ -17,10 +17,7 @@ import javafx.stage.Window;
 
 import java.util.Optional;
 
-/**
- * Duomenų bazė → Prisijungti…: a small Dialog with URL, user and password.
- * Built in code (not FXML) because it is only 3 fields; it uses the same controls as the forms.
- */
+/** Duomenų bazė → Prisijungti…: a small Dialog with URL, user and password, built in code. */
 final class ConnectDialog {
 
     // XAMPP defaults: MySQL/MariaDB on this computer, port 3306, user "root" with an empty password.
@@ -31,8 +28,7 @@ final class ConnectDialog {
     }
 
     /**
-     * Shows the dialog. Connects when the user presses "Prisijungti".
-     * A failed connect shows the error and KEEPS the dialog open, so the user can fix the password.
+     * Shows the dialog and connects on "Prisijungti". A failed connect keeps it open.
      *
      * @return the URL we connected to, or empty if the user cancelled
      */
@@ -47,7 +43,7 @@ final class ConnectDialog {
         urlField.setPrefColumnCount(30);
         TextField userField = new TextField(DEFAULT_USER);
         userField.setId("userField");
-        PasswordField passwordField = new PasswordField(); // shows dots, not the typed text
+        PasswordField passwordField = new PasswordField();
         passwordField.setId("passwordField");
 
         GridPane grid = new GridPane();
@@ -63,8 +59,7 @@ final class ConnectDialog {
         ButtonType cancel = new ButtonType("Atšaukti", ButtonBar.ButtonData.CANCEL_CLOSE);
         dialog.getDialogPane().getButtonTypes().setAll(connect, cancel);
 
-        // An event FILTER runs before the button's normal action (which would close the dialog).
-        // We try to connect here; on failure, consume() cancels the close, so the dialog stays open.
+        // Event filter: on a failed connect, consume() keeps the dialog open.
         Node connectButton = dialog.getDialogPane().lookupButton(connect);
         connectButton.addEventFilter(ActionEvent.ACTION, event -> {
             try {

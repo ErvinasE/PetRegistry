@@ -22,7 +22,6 @@ import static com.example.petregistry.service.Checks.throwIfAny;
 
 public class UserService {
 
-    // Compiled once (static final), not on every validate() call.
     private static final Pattern USERNAME = Pattern.compile("[A-Za-z0-9_]{3,30}");
     private static final Pattern EMAIL = Pattern.compile("[^@\\s]+@[^@\\s]+\\.[^@\\s]+");
     private static final Pattern PHONE = Pattern.compile("\\+370\\d{8}");
@@ -62,11 +61,7 @@ public class UserService {
         Repositories.users().update(user);
     }
 
-    /**
-     * Checks the user and the password fields without saving anything. create/update call it too.
-     * A new user (id 0) must get a password; an existing one only if something was typed.
-     * Public so the form can check a draft copy BEFORE it changes the stored user.
-     */
+    /** Checks the user and password fields without saving. Public so the form can check a draft copy. */
     public void validate(User user, String password, String passwordRepeat) {
         Map<String, String> errors = validateFields(user);
         if (user.isNew() || wantsNewPassword(password, passwordRepeat)) {
@@ -99,9 +94,7 @@ public class UserService {
             throw new BusinessRuleException("Šeimininko „" + owner.getFullName()
                     + "“ pašalinti negalima: yra jo rezervacijų (" + count + ")");
         }
-        // One transaction: if deleting the owner fails, the pets come back too (no owner left without pets
-        // deleted "halfway"). Loop over a COPY: removePet changes the real list, and changing a list
-        // while looping over it throws ConcurrentModificationException.
+        // One transaction. Loop over a COPY: removePet changes the real list (ConcurrentModificationException).
         Repositories.inTransaction(() -> {
             for (Pet pet : new ArrayList<>(owner.getPets())) {
                 owner.removePet(pet);

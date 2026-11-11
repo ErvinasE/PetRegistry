@@ -5,10 +5,7 @@ import com.example.petregistry.model.BaseEntity;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * The storage contract. Services depend on this interface, not on a concrete class.
- * LAB1: implemented in memory. LAB2: implemented with JDBC.
- */
+/** The storage contract. Services depend on this interface, not on a concrete class. */
 public interface Repository<T extends BaseEntity> {
 
     List<T> findAll();

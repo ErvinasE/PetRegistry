@@ -44,8 +44,7 @@ import java.util.Map;
 
 /**
  * Controller for reservation-form.fxml: the "new / edit reservation" window.
- * The choice lists depend on each other: owner → their pets, service → its company's caretakers.
- * In edit mode it also shows the reservation's reviews (saved right away, like services in the company form).
+ * The owner → pets and service → caretakers lists depend on each other.
  */
 public class ReservationFormController {
 
@@ -120,8 +119,7 @@ public class ReservationFormController {
             timeBox.getItems().add(t);
         }
 
-        // Past days can't be clicked in the calendar. (The service still checks "start in the future",
-        // because today 08:00 is in the past at noon.)
+        // Past days can't be clicked. (The service still checks "start in the future".)
         datePicker.setDayCellFactory(picker -> new DateCell() {
             @Override
             public void updateItem(LocalDate date, boolean empty) {
@@ -130,7 +128,6 @@ public class ReservationFormController {
             }
         });
 
-        // Listeners: when a choice changes, the lists and labels that depend on it are refilled.
         ownerBox.valueProperty().addListener((observable, oldOwner, newOwner) -> loadPets(newOwner));
         serviceBox.valueProperty().addListener((observable, oldService, newService) -> {
             loadCaretakers(newService);
@@ -155,9 +152,8 @@ public class ReservationFormController {
     }
 
     /**
-     * New: empty fields, status PENDING, no reviews section (a new booking can't have reviews).
-     * Edit: owner and service are locked (the price was copied from the service when booking).
-     * A visit that already started or ended can't be changed at all; only its reviews can.
+     * New: empty fields, status PENDING, no reviews section.
+     * Edit: owner and service are locked. A visit that already started can't be changed, only its reviews.
      */
     private void fill(Reservation existing) {
         reservation = existing;
@@ -221,9 +217,9 @@ public class ReservationFormController {
         copyFormInto(target);
         try {
             if (target.isNew()) {
-                reservationService.create(target); // sets end and copies the price
+                reservationService.create(target);
             } else {
-                reservationService.update(target); // moves end with the start; the price stays
+                reservationService.update(target);
             }
         } catch (ValidationException e) {
             showErrors(e.getErrors()); // shouldn't happen: the draft passed the same check
@@ -263,7 +259,7 @@ public class ReservationFormController {
         if (!Dialogs.confirm(stage(), "Pašalinti atsiliepimą", "Ar tikrai pašalinti šį atsiliepimą?")) {
             return;
         }
-        reviewService.delete(review); // also removes it from reservation.getReviews() and updates the average
+        reviewService.delete(review);
         reloadReviews();
     }
 
@@ -307,10 +303,7 @@ public class ReservationFormController {
         caretakerBox.setValue(caretakerBox.getItems().contains(chosen) ? chosen : null);
     }
 
-    /**
-     * The two labels the user doesn't type: end = start + duration, and the price.
-     * A saved reservation shows ITS price (copied when booked), not the service's current one.
-     */
+    /** The labels the user doesn't type: end = start + duration, and the price (a saved reservation shows its own copied price). */
     private void updateCalculated() {
         Service service = serviceBox.getValue();
         LocalDateTime start = start();

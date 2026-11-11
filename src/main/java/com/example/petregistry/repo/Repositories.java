@@ -16,8 +16,7 @@ import com.example.petregistry.repo.memory.InMemoryUserRepository;
 import com.example.petregistry.repo.memory.SeedData;
 
 /**
- * The one place that decides which storage is in use.
- * LAB1: useMemory(). LAB2: useDatabase() after connecting.
+ * The one place that decides which storage is in use (memory or JDBC).
  * Services call Repositories.pets() etc. every time, so they follow a switch.
  */
 public final class Repositories {
@@ -31,7 +30,6 @@ public final class Repositories {
     private static boolean database;
 
     private Repositories() {
-        // only static methods, no objects
     }
 
     /** Fresh in-memory storage filled with seed data. Old in-memory data is thrown away. */
@@ -46,10 +44,7 @@ public final class Repositories {
         database = false;
     }
 
-    /**
-     * LAB2: the same interfaces, now implemented with JDBC. Call after DatabaseManager.connect().
-     * Nothing else changes: services keep calling Repositories.pets() etc. and get the JDBC version.
-     */
+    /** Switches to JDBC. Call after DatabaseManager.connect(). */
     public static void useDatabase() {
         if (!DatabaseManager.isConnected()) {
             throw new IllegalStateException("Connect first: DatabaseManager.connect(...)");
@@ -67,11 +62,7 @@ public final class Repositories {
         return database;
     }
 
-    /**
-     * Runs several repository calls as one unit: all are saved, or (on any error) none.
-     * Database: a real SQL transaction. Memory: just runs the work (a map has nothing to roll back).
-     * Services use this, so they never need java.sql.
-     */
+    /** Runs several repository calls as one unit: all saved, or none. Database: SQL transaction; memory: just runs the work. */
     public static void inTransaction(Runnable work) {
         if (database) {
             DatabaseManager.inTransaction(work);

@@ -29,11 +29,9 @@ import java.util.EnumSet;
 import java.util.Set;
 
 /**
- * Test data for LAB1, so every tab has rows to show.
- * 2 companies, 1 manager each, 3 caretakers, 3 owners, 5 pets, 5 services,
- * 5 reservations in different statuses, 2 reviews.
- * Every user's password is "Slaptazodis1".
- * Average ratings stay 0 here: ReviewService.refreshAverage (M4) is the only place that sets them.
+ * Demo data so every tab has rows: 2 companies, 1 manager each, 3 caretakers, 3 owners, 5 pets, 5 services,
+ * 5 reservations in different statuses, 2 reviews. Every user's password is "Slaptazodis1".
+ * Average ratings stay 0 here: only ReviewService.refreshAverage sets them.
  */
 public final class SeedData {
 

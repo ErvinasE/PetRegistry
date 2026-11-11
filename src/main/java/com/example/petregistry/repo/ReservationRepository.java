@@ -19,7 +19,6 @@ public interface ReservationRepository extends Repository<Reservation> {
     List<Reservation> search(ReservationStatus status, Integer ownerId, LocalDate from, LocalDate to);
 
     // Lookups for the delete rules ("does this pet have reservations?").
-    // LAB2: these become SELECT COUNT(*) ... WHERE queries.
 
     int countByPet(int petId);
 

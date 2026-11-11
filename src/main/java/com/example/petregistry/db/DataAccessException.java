@@ -5,8 +5,7 @@ import java.sql.SQLIntegrityConstraintViolationException;
 
 /**
  * A database error with a message the user can read.
- * Unchecked (a RuntimeException), so services and controllers don't need "throws SQLException" everywhere:
- * java.sql stays inside the db and repo.jdbc packages.
+ * Unchecked, so java.sql stays inside the db and repo.jdbc packages.
  */
 public class DataAccessException extends RuntimeException {
 

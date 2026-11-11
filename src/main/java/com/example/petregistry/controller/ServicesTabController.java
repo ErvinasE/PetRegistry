@@ -73,10 +73,7 @@ public class ServicesTabController {
         loadTable();
     }
 
-    /**
-     * Reads the price filters first. A bad number shows an error and does NOT search,
-     * because silently ignoring it would show a list the user didn't ask for.
-     */
+    /** Reads the price filters first. A bad number shows an error and does NOT search. */
     private void loadTable() {
         BigDecimal minPrice;
         BigDecimal maxPrice;
@@ -119,10 +116,7 @@ public class ServicesTabController {
         }
     }
 
-    /**
-     * Asks first. A service with reservations is not deleted: the service makes it INACTIVE
-     * (old reservations still point to it), and we tell the user so.
-     */
+    /** Asks first. A service with reservations only becomes INACTIVE, and we tell the user. */
     @FXML
     private void onDelete() {
         Service service = selectedOrWarn();

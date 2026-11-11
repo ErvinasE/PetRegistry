@@ -30,11 +30,7 @@ import java.io.UncheckedIOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-/**
- * Controller for company-form.fxml: a window with inner tabs.
- * Duomenys = the company's fields (saved with Išsaugoti).
- * Paslaugos and Prižiūrėtojai = changes are saved right away, so the company must already exist (have an id).
- */
+/** Controller for company-form.fxml: a window with inner tabs (Duomenys, Paslaugos, Prižiūrėtojai). */
 public class CompanyFormController {
 
     private final CompanyService companyService = new CompanyService();
@@ -94,7 +90,6 @@ public class CompanyFormController {
 
     @FXML
     private void initialize() {
-        // The service list shows the status too, so the user sees when "Pašalinti" only made it INACTIVE.
         servicesList.setCellFactory(listView -> new ListCell<>() {
             @Override
             protected void updateItem(Service service, boolean empty) {
@@ -122,11 +117,7 @@ public class CompanyFormController {
         unlockInnerTabs();
     }
 
-    /**
-     * Same draft pattern as the other forms.
-     * A NEW company: after saving, the window stays open and the inner tabs unlock,
-     * because the usual next step is adding its services. An EDITED company: the window closes.
-     */
+    /** Same draft pattern as the other forms. A new company stays open after saving, so services can be added. */
     @FXML
     private void onSave() {
         clearErrors();
@@ -181,10 +172,7 @@ public class CompanyFormController {
         }
     }
 
-    /**
-     * Removing a service = deleting it (composition: a service can't exist without its company).
-     * The delete rule still applies: a booked service only becomes INACTIVE.
-     */
+    /** Removing a service deletes it. A booked service only becomes INACTIVE. */
     @FXML
     private void onRemoveService() {
         Service service = servicesList.getSelectionModel().getSelectedItem();
@@ -217,7 +205,7 @@ public class CompanyFormController {
         reloadCaretakers();
     }
 
-    /** The caretaker leaves the company but is NOT deleted (aggregation): they stay in Users as independent. */
+    /** The caretaker leaves the company but stays in Users. */
     @FXML
     private void onReleaseCaretaker() {
         Caretaker caretaker = caretakersList.getSelectionModel().getSelectedItem();
