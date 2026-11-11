@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane prefWidth="520.0" stylesheets="@style.css"
+            xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.petregistry.controller.ReservationFormController">
+    <padding>
+        <Insets bottom="12.0" left="12.0" right="12.0" top="12.0"/>
+    </padding>
+
+    <center>
+        <VBox spacing="10.0">
+            <!-- The booking. "*" = required. Each choice list depends on the one above it. -->
+            <GridPane hgap="8.0" vgap="8.0">
+                <columnConstraints>
+                    <ColumnConstraints minWidth="110.0"/>
+                    <ColumnConstraints prefWidth="330.0"/>
+                </columnConstraints>
+
+                <Label text="Šeimininkas *" GridPane.rowIndex="0"/>
+                <ComboBox fx:id="ownerBox" maxWidth="Infinity" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+                <!-- Filled from the chosen owner's pets -->
+                <Label text="Gyvūnas *" GridPane.rowIndex="1"/>
+                <ComboBox fx:id="petBox" maxWidth="Infinity" promptText="Pirmiausia pasirinkite šeimininką"
+                          GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+                <!-- Only ACTIVE services can be booked -->
+                <Label text="Paslauga *" GridPane.rowIndex="2"/>
+                <ComboBox fx:id="serviceBox" maxWidth="Infinity" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+
+                <!-- Filled from the chosen service's company. Optional: ✕ clears it. -->
+                <Label text="Prižiūrėtojas" GridPane.rowIndex="3"/>
+                <HBox spacing="4.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                    <ComboBox fx:id="caretakerBox" maxWidth="Infinity" promptText="Pirmiausia pasirinkite paslaugą"
+                              HBox.hgrow="ALWAYS"/>
+                    <Button fx:id="clearCaretakerButton" onAction="#onClearCaretaker" text="✕"/>
+                </HBox>
+
+                <!-- Past days are disabled in the calendar. Not editable by typing: nothing to parse. -->
+                <Label text="Data ir laikas *" GridPane.rowIndex="4"/>
+                <HBox spacing="4.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                    <DatePicker fx:id="datePicker" editable="false" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
+                    <ComboBox fx:id="timeBox" prefWidth="100.0" promptText="Laikas"/>
+                </HBox>
+
+                <!-- Calculated, not typed: end = start + duration, price = the service's price -->
+                <Label text="Pabaiga" GridPane.rowIndex="5"/>
+                <Label fx:id="endLabel" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+
+                <Label text="Kaina" GridPane.rowIndex="6"/>
+                <Label fx:id="priceLabel" GridPane.columnIndex="1" GridPane.rowIndex="6"/>
+
+                <Label text="Būsena" GridPane.rowIndex="7"/>
+                <Label fx:id="statusLabel" GridPane.columnIndex="1" GridPane.rowIndex="7"/>
+            </GridPane>
+
+            <!-- Reviews: only for a saved reservation (edit mode). Changes are saved right away. -->
+            <VBox fx:id="reviewsSection" spacing="6.0">
+                <Separator/>
+                <Label style="-fx-font-weight: bold;" text="Atsiliepimai"/>
+                <ListView fx:id="reviewsList" prefHeight="120.0"/>
+                <HBox alignment="CENTER_LEFT" spacing="6.0">
+                    <Button fx:id="addReviewButton" onAction="#onAddReview" text="Pridėti atsiliepimą"/>
+                    <Button fx:id="removeReviewButton" onAction="#onRemoveReview" text="Pašalinti atsiliepimą"/>
+                    <Label fx:id="reviewsHint" style="-fx-text-fill: grey;" wrapText="true"/>
+                </HBox>
+            </VBox>
+        </VBox>
+    </center>
+
+    <bottom>
+        <HBox alignment="CENTER_LEFT" spacing="8.0">
+            <padding>
+                <Insets top="12.0"/>
+            </padding>
+            <Label fx:id="hintLabel" maxWidth="300.0" style="-fx-text-fill: grey;" wrapText="true"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button fx:id="saveButton" defaultButton="true" onAction="#onSave" text="Išsaugoti"/>
+            <Button fx:id="closeButton" cancelButton="true" onAction="#onClose" text="Uždaryti"/>
+        </HBox>
+    </bottom>
+</BorderPane>

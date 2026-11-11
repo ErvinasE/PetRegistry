@@ -3,7 +3,11 @@ package com.example.petregistry.util;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ChoiceDialog;
 import javafx.stage.Window;
+
+import java.util.List;
+import java.util.Optional;
 
 /** Small alerts used by every screen. Each one opens on top of its owner window and waits for the user. */
 public final class Dialogs {
@@ -32,6 +36,23 @@ public final class Dialogs {
         alert.setTitle(title);
         alert.setHeaderText(null);
         return alert.showAndWait().filter(answer -> answer == YES).isPresent();
+    }
+
+    /**
+     * Lets the user pick one of the choices from a drop-down list.
+     * Returns the chosen value, or empty if the user pressed "Atšaukti" (or closed the dialog).
+     */
+    public static <T> Optional<T> choose(Window owner, String title, String text, List<T> choices) {
+        ChoiceDialog<T> dialog = new ChoiceDialog<>(choices.get(0), choices);
+        dialog.initOwner(owner);
+        dialog.setTitle(title);
+        dialog.setHeaderText(null);
+        dialog.setContentText(text);
+        // ChoiceDialog returns the selected item for any OK_DONE button, so our own Lithuanian buttons work.
+        dialog.getDialogPane().getButtonTypes().setAll(
+                new ButtonType("Gerai", ButtonBar.ButtonData.OK_DONE),
+                new ButtonType("Atšaukti", ButtonBar.ButtonData.CANCEL_CLOSE));
+        return dialog.showAndWait();
     }
 
     private static void show(Alert.AlertType type, Window owner, String title, String text) {

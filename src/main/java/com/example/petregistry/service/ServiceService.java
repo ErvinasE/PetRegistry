@@ -2,6 +2,7 @@ package com.example.petregistry.service;
 
 import com.example.petregistry.model.Company;
 import com.example.petregistry.model.Service;
+import com.example.petregistry.model.ServiceStatus;
 import com.example.petregistry.model.ServiceType;
 import com.example.petregistry.repo.Repositories;
 
@@ -26,11 +27,21 @@ public class ServiceService {
         return Repositories.services().search(type, companyId, minPrice, maxPrice);
     }
 
-    /** Validates, saves, then links the service to its company (both sides). */
+    /** Only ACTIVE services can be booked (the reservation form's list). */
+    public List<Service> findActive() {
+        return Repositories.services().findAll().stream()
+                .filter(s -> s.getStatus() == ServiceStatus.ACTIVE)
+                .toList();
+    }
+
+    /**
+     * Validates, links the service to its company (both sides), then saves it.
+     * Link BEFORE saving: in LAB2 the INSERT needs service.getCompany().getId() for company_id.
+     */
     public Service create(Service service, Company company) {
         validate(service, company);
-        Repositories.services().create(service);
         company.addService(service);
+        Repositories.services().create(service);
         return service;
     }
 

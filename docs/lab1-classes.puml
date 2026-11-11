@@ -67,6 +67,7 @@ abstract class BaseEntity {
 
 interface Rateable {
   + getAverageRating() : double
+  + setAverageRating(averageRating : double) : void
 }
 
 ' ===================== Users =====================

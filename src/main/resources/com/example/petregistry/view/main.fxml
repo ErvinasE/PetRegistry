@@ -62,7 +62,7 @@
                         <fx:include fx:id="petsTab" source="pets-tab.fxml"/>
                     </content>
                 </Tab>
-                <Tab text="Rezervacijos">
+                <Tab fx:id="reservationsTabItem" text="Rezervacijos">
                     <content>
                         <fx:include fx:id="reservationsTab" source="reservations-tab.fxml"/>
                     </content>

@@ -64,11 +64,36 @@ public class ReservationService {
         targets.forEach(reviewService::refreshAverage);
     }
 
+    /**
+     * The "Keisti būseną" button. The model method (confirm(), start() ...) checks the transition table
+     * and throws IllegalStateException on a wrong move. We turn that into a rule message for the UI.
+     * No validate() here: changing the status is not a form edit (an IN_PROGRESS visit has a past start).
+     */
+    public void changeStatus(Reservation reservation, ReservationStatus target) {
+        try {
+            switch (target) {
+                case CONFIRMED -> reservation.confirm();
+                case REJECTED -> reservation.reject();
+                case CANCELLED -> reservation.cancel();
+                case IN_PROGRESS -> reservation.start();
+                case COMPLETED -> reservation.complete();
+                case PENDING -> throw new IllegalStateException("Grąžinti į „" + target + "“ negalima");
+            }
+        } catch (IllegalStateException e) {
+            throw new BusinessRuleException(e.getMessage());
+        }
+        Repositories.reservations().update(reservation);
+    }
+
     private static LocalDateTime endOf(Reservation reservation) {
         return reservation.getStart().plusMinutes(reservation.getService().getDurationMinutes());
     }
 
-    private void validate(Reservation reservation) {
+    /**
+     * Checks the reservation without saving anything. create/update call it too.
+     * Public so the form can check a draft copy BEFORE it changes the stored reservation.
+     */
+    public void validate(Reservation reservation) {
         Map<String, String> errors = new LinkedHashMap<>();
         PetOwner owner = reservation.getOwner();
         Pet pet = reservation.getPet();

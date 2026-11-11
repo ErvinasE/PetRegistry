@@ -23,11 +23,14 @@ public class PetService {
         return Repositories.pets().search(name, species, ownerId);
     }
 
-    /** Validates, saves, then links the pet to its owner (both sides). */
+    /**
+     * Validates, links the pet to its owner (both sides), then saves it.
+     * Link BEFORE saving: in LAB2 the INSERT needs pet.getOwner().getId() for owner_id.
+     */
     public Pet create(Pet pet, PetOwner owner) {
         validate(pet, owner);
-        Repositories.pets().create(pet);
         owner.addPet(pet);
+        Repositories.pets().create(pet);
         return pet;
     }
 

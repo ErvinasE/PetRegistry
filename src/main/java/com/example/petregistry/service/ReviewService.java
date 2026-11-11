@@ -1,5 +1,6 @@
 package com.example.petregistry.service;
 
+import com.example.petregistry.model.Caretaker;
 import com.example.petregistry.model.Rateable;
 import com.example.petregistry.model.Reservation;
 import com.example.petregistry.model.ReservationStatus;
@@ -7,6 +8,7 @@ import com.example.petregistry.model.Review;
 import com.example.petregistry.model.User;
 import com.example.petregistry.repo.Repositories;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,11 +25,14 @@ public class ReviewService {
         return Repositories.reviews().findByReservation(reservationId);
     }
 
-    /** Validates, saves, links the review to its reservation, and updates the target's average. */
+    /**
+     * Validates, links the review to its reservation, saves it, and updates the target's average.
+     * Link BEFORE saving: in LAB2 the INSERT needs review.getReservation().getId() for reservation_id.
+     */
     public Review create(Review review, Reservation reservation) {
         validate(review, reservation);
-        Repositories.reviews().create(review);
         reservation.addReview(review);
+        Repositories.reviews().create(review);
         refreshAverage(review.getTarget());
         return review;
     }
@@ -98,8 +103,17 @@ public class ReviewService {
             errors.put("author", "Šis autorius jau paliko atsiliepimą šiai rezervacijai");
         }
 
-        if (review.getTarget() == null) {
+        Rateable target = review.getTarget();
+        if (target == null) {
             errors.put("target", "Pasirinkite, ką vertinate");
+        } else if (reservation != null && reservation.isParticipant(author)
+                && !allowedTargets(author, reservation).contains(target)) {
+            // Only checked for a real participant: for anyone else the "author" message already says what's wrong.
+            errors.put("target", "Šis autorius negali vertinti pasirinkto adresato");
+        }
+        // The caretaker also rates how the pet behaved. The owner doesn't rate their own pet.
+        if (author instanceof Caretaker && review.getPetBehaviorRating() == null) {
+            errors.put("petBehaviorRating", "Įvertinkite gyvūno elgesį");
         }
         if (review.getRating() < 1 || review.getRating() > 5) {
             errors.put("rating", "Įvertinimas turi būti nuo 1 iki 5");
@@ -109,6 +123,28 @@ public class ReviewService {
             errors.put("petBehaviorRating", "Gyvūno elgesio įvertinimas turi būti nuo 1 iki 5");
         }
         throwIfAny(errors);
+    }
+
+    /**
+     * Who this author may review in this reservation (the form fills its target list from here):
+     * the owner reviews the caretaker or the company; the caretaker reviews the owner.
+     */
+    public List<Rateable> allowedTargets(User author, Reservation reservation) {
+        List<Rateable> targets = new ArrayList<>();
+        if (author == null || reservation == null) {
+            return targets;
+        }
+        if (author.equals(reservation.getOwner())) {
+            if (reservation.getCaretaker() != null) {
+                targets.add(reservation.getCaretaker());
+            }
+            if (reservation.getService() != null && reservation.getService().getCompany() != null) {
+                targets.add(reservation.getService().getCompany());
+            }
+        } else if (author.equals(reservation.getCaretaker())) {
+            targets.add(reservation.getOwner());
+        }
+        return targets;
     }
 
     /** One review per (reservation, author). The review being edited doesn't count against itself. */

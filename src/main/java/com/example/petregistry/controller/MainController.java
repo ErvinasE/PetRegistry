@@ -25,6 +25,7 @@ public class MainController {
     @FXML private Tab companiesTabItem;
     @FXML private Tab servicesTabItem;
     @FXML private Tab petsTabItem;
+    @FXML private Tab reservationsTabItem;
     @FXML private Label statusLabel;
 
     @FXML
@@ -40,6 +41,8 @@ public class MainController {
                 servicesTabController.refresh();
             } else if (newTab == petsTabItem) {
                 petsTabController.refresh();
+            } else if (newTab == reservationsTabItem) {
+                reservationsTabController.refresh();
             }
         });
     }

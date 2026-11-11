@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+
+<BorderPane stylesheets="@style.css"
+            xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.petregistry.controller.ReviewFormController">
+    <padding>
+        <Insets bottom="12.0" left="12.0" right="12.0" top="12.0"/>
+    </padding>
+
+    <center>
+        <GridPane hgap="8.0" vgap="8.0">
+            <columnConstraints>
+                <ColumnConstraints minWidth="120.0"/>
+                <ColumnConstraints prefWidth="280.0"/>
+            </columnConstraints>
+
+            <!-- The reservation's owner or caretaker -->
+            <Label text="Autorius *" GridPane.rowIndex="0"/>
+            <ComboBox fx:id="authorBox" maxWidth="Infinity" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+            <!-- Filled from the author: owner → caretaker or company; caretaker → owner -->
+            <Label text="Vertinamas *" GridPane.rowIndex="1"/>
+            <ComboBox fx:id="targetBox" maxWidth="Infinity" promptText="Pirmiausia pasirinkite autorių"
+                      GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+            <Label text="Įvertinimas *" GridPane.rowIndex="2"/>
+            <ComboBox fx:id="ratingBox" prefWidth="100.0" promptText="1–5" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+
+            <!-- Only the caretaker rates the pet's behaviour -->
+            <Label text="Gyvūno elgesys" GridPane.rowIndex="3"/>
+            <ComboBox fx:id="behaviorBox" prefWidth="100.0" promptText="1–5" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+
+            <Label text="Komentaras" GridPane.rowIndex="4"/>
+            <TextArea fx:id="commentArea" prefRowCount="3" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+        </GridPane>
+    </center>
+
+    <bottom>
+        <HBox alignment="CENTER_RIGHT" spacing="8.0">
+            <padding>
+                <Insets top="12.0"/>
+            </padding>
+            <Button fx:id="saveButton" defaultButton="true" onAction="#onSave" text="Išsaugoti"/>
+            <Button fx:id="cancelButton" cancelButton="true" onAction="#onCancel" text="Atšaukti"/>
+        </HBox>
+    </bottom>
+</BorderPane>
