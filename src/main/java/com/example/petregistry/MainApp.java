@@ -1,6 +1,7 @@
 package com.example.petregistry;
 
 import com.example.petregistry.controller.MainController;
+import com.example.petregistry.db.DatabaseManager;
 import com.example.petregistry.repo.Repositories;
 import com.example.petregistry.service.ReviewService;
 import com.example.petregistry.util.Dialogs;
@@ -15,7 +16,8 @@ public class MainApp extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        // LAB1: data lives in memory. The averages are computed from the seed reviews once.
+        // The app starts with data in memory. Duomenų bazė → Prisijungti… switches to MySQL (LAB2).
+        // The averages are computed from the seed reviews once.
         Repositories.useMemory();
         new ReviewService().refreshAllAverages();
 
@@ -40,6 +42,12 @@ public class MainApp extends Application {
         stage.setTitle("Pet Registry");
         stage.setScene(scene);
         stage.show();
+    }
+
+    /** JavaFX calls this once when the app closes (Išeiti, the window's X). Never leave a connection open. */
+    @Override
+    public void stop() {
+        DatabaseManager.disconnect();
     }
 
     /**

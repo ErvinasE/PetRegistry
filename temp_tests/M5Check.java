@@ -69,8 +69,9 @@ public class M5Check {
             check("Failas: Išeiti", texts(bar.getMenus().get(0)).equals(List.of("Išeiti")));
             check("Duomenų bazė: Prisijungti…, Atsijungti",
                     texts(bar.getMenus().get(1)).equals(List.of("Prisijungti…", "Atsijungti")));
-            check("both database items are disabled",
-                    bar.getMenus().get(1).getItems().stream().allMatch(MenuItem::isDisable));
+            // Since M11: not connected yet → Prisijungti… enabled, Atsijungti disabled.
+            check("Prisijungti… enabled, Atsijungti disabled (M11)",
+                    !bar.getMenus().get(1).getItems().get(0).isDisable() && bar.getMenus().get(1).getItems().get(1).isDisable());
             check("Pagalba: Apie", texts(bar.getMenus().get(2)).equals(List.of("Apie")));
             return null;
         });

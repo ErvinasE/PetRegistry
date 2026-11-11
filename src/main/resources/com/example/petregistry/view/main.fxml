@@ -22,11 +22,11 @@
                         <MenuItem fx:id="exitItem" text="Išeiti" onAction="#onExit"/>
                     </items>
                 </Menu>
-                <!-- LAB2 (M11) enables these two -->
+                <!-- LAB2: only one of the two is enabled at a time (MainController switches them) -->
                 <Menu text="Duomenų bazė">
                     <items>
-                        <MenuItem fx:id="connectItem" text="Prisijungti…" disable="true"/>
-                        <MenuItem fx:id="disconnectItem" text="Atsijungti" disable="true"/>
+                        <MenuItem fx:id="connectItem" text="Prisijungti…" onAction="#onConnect"/>
+                        <MenuItem fx:id="disconnectItem" text="Atsijungti" disable="true" onAction="#onDisconnect"/>
                     </items>
                 </Menu>
                 <Menu text="Pagalba">

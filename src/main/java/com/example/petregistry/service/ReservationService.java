@@ -55,12 +55,15 @@ public class ReservationService {
     public void delete(Reservation reservation) {
         List<Review> reviews = Repositories.reviews().findByReservation(reservation.getId());
         Set<Rateable> targets = new HashSet<>();
-        for (Review review : reviews) {
-            targets.add(review.getTarget());
-            reservation.removeReview(review);
-            Repositories.reviews().delete(review.getId());
-        }
-        Repositories.reservations().delete(reservation.getId());
+        // One transaction: the reviews and the reservation go together, or nothing is deleted.
+        Repositories.inTransaction(() -> {
+            for (Review review : reviews) {
+                targets.add(review.getTarget());
+                reservation.removeReview(review);
+                Repositories.reviews().delete(review.getId());
+            }
+            Repositories.reservations().delete(reservation.getId());
+        });
         targets.forEach(reviewService::refreshAverage);
     }
 

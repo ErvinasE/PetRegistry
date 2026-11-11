@@ -99,13 +99,16 @@ public class UserService {
             throw new BusinessRuleException("Šeimininko „" + owner.getFullName()
                     + "“ pašalinti negalima: yra jo rezervacijų (" + count + ")");
         }
-        // Loop over a COPY: removePet changes the real list, and changing a list
+        // One transaction: if deleting the owner fails, the pets come back too (no owner left without pets
+        // deleted "halfway"). Loop over a COPY: removePet changes the real list, and changing a list
         // while looping over it throws ConcurrentModificationException.
-        for (Pet pet : new ArrayList<>(owner.getPets())) {
-            owner.removePet(pet);
-            Repositories.pets().delete(pet.getId());
-        }
-        Repositories.users().delete(owner.getId());
+        Repositories.inTransaction(() -> {
+            for (Pet pet : new ArrayList<>(owner.getPets())) {
+                owner.removePet(pet);
+                Repositories.pets().delete(pet.getId());
+            }
+            Repositories.users().delete(owner.getId());
+        });
     }
 
     /** Rule: has reservations -> refuse; else release from the company, then delete. */

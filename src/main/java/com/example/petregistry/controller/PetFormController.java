@@ -54,6 +54,7 @@ public class PetFormController {
     private Pet pet;            // the pet being edited (the stored object), or a new one
     private String photoPath;   // chosen in the form; written into the pet only on a successful save
     private Pet saved;          // set when the save worked
+    private PetOwner fixedOwner; // set when opened from the owner's pet list (the box is locked)
 
     /**
      * Opens the form as a modal window and waits until it is closed.
@@ -83,6 +84,7 @@ public class PetFormController {
         PetFormController form = loader.getController();
         form.fill(pet);
         if (fixedOwner != null) {
+            form.fixedOwner = fixedOwner;
             form.ownerBox.setValue(fixedOwner);
             form.ownerBox.setDisable(true);
         }
@@ -140,7 +142,9 @@ public class PetFormController {
 
         Pet draft = new Pet();
         copyFormInto(draft, weight);
-        PetOwner owner = ownerBox.getValue();
+        // The fixed owner is used as it is: ownerBox.getValue() may be an equal COPY of it
+        // (in LAB2 the list holds fresh objects from the DB), and the owner's pet list must see the new pet.
+        PetOwner owner = fixedOwner != null ? fixedOwner : ownerBox.getValue();
 
         Map<String, String> errors = new LinkedHashMap<>();
         try {

@@ -73,6 +73,7 @@ public class ServiceFormController {
 
     private Service service;  // the service being edited (the stored object), or a new one
     private Service saved;    // set when the save worked
+    private Company fixedCompany; // set when opened from the company window (the box is locked)
 
     /**
      * Opens the form as a modal window and waits until it is closed.
@@ -100,6 +101,7 @@ public class ServiceFormController {
         ServiceFormController form = loader.getController();
         form.fill(service);
         if (fixedCompany != null) {
+            form.fixedCompany = fixedCompany;
             form.companyBox.setValue(fixedCompany);
             form.companyBox.setDisable(true);
         }
@@ -203,7 +205,9 @@ public class ServiceFormController {
         Map<String, String> formErrors = new LinkedHashMap<>();
         BigDecimal price = parsePrice(formErrors);
         int duration = parseDuration(formErrors);
-        Company company = companyBox.getValue();
+        // The fixed company is used as it is: companyBox.getValue() may be an equal COPY of it
+        // (in LAB2 the list holds fresh objects from the DB), and the company window must see the new service.
+        Company company = fixedCompany != null ? fixedCompany : companyBox.getValue();
 
         Service draft = new Service();
         copyFormInto(draft, price, duration);

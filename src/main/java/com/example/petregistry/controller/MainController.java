@@ -1,19 +1,26 @@
 package com.example.petregistry.controller;
 
+import com.example.petregistry.db.DataAccessException;
+import com.example.petregistry.db.DatabaseManager;
+import com.example.petregistry.repo.Repositories;
+import com.example.petregistry.service.ReviewService;
 import com.example.petregistry.util.Dialogs;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.stage.Window;
+
+import java.util.Optional;
 
 /** Controller for main.fxml: the menu bar, the tabs and the status bar. */
 public class MainController {
 
     // FXMLLoader fills these from <fx:include fx:id="usersTab" .../>: the field name must be fx:id + "Controller".
-    // M11 will also refresh all tabs after connecting to the database.
+    // refreshAllTabs() uses them after connecting to / disconnecting from the database.
     @FXML private UsersTabController usersTabController;
     @FXML private CompaniesTabController companiesTabController;
     @FXML private ServicesTabController servicesTabController;
@@ -27,6 +34,8 @@ public class MainController {
     @FXML private Tab petsTabItem;
     @FXML private Tab reservationsTabItem;
     @FXML private Label statusLabel;
+    @FXML private MenuItem connectItem;
+    @FXML private MenuItem disconnectItem;
 
     @FXML
     private void initialize() {
@@ -45,6 +54,56 @@ public class MainController {
                 reservationsTabController.refresh();
             }
         });
+    }
+
+    /**
+     * Duomenų bazė → Prisijungti…
+     * connect → switch the repositories to JDBC → reload every tab from the database → update menu and status.
+     * If reading fails (e.g. the tables were never created), we go back to memory, so the app stays usable.
+     */
+    @FXML
+    private void onConnect() {
+        Optional<String> url = ConnectDialog.show(window());
+        if (url.isEmpty()) {
+            return; // cancelled
+        }
+        try {
+            Repositories.useDatabase();
+            refreshAllTabs();
+        } catch (DataAccessException e) {
+            useMemory();
+            Dialogs.error(window(), "Duomenų bazės klaida", e.getMessage()
+                    + "\nAr įkėlėte docs/schema.sql? Dirbama su duomenimis atmintyje.");
+            return;
+        }
+        statusLabel.setText("Prisijungta prie DB: " + url.get());
+        connectItem.setDisable(true);
+        disconnectItem.setDisable(false);
+    }
+
+    /** Duomenų bazė → Atsijungti: close the connection and go back to fresh in-memory data. */
+    @FXML
+    private void onDisconnect() {
+        useMemory();
+    }
+
+    private void useMemory() {
+        DatabaseManager.disconnect();
+        Repositories.useMemory();
+        new ReviewService().refreshAllAverages();
+        refreshAllTabs();
+        statusLabel.setText("Duomenys atmintyje");
+        connectItem.setDisable(false);
+        disconnectItem.setDisable(true);
+    }
+
+    /** After a storage switch, every tab must reload: their tables still hold objects from the old storage. */
+    private void refreshAllTabs() {
+        usersTabController.refresh();
+        companiesTabController.refresh();
+        servicesTabController.refresh();
+        petsTabController.refresh();
+        reservationsTabController.refresh();
     }
 
     /** Pagalba → Apie */

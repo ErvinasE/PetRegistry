@@ -52,15 +52,19 @@ public class CompanyService {
             throw new BusinessRuleException("Įmonės „" + company.getName()
                     + "“ pašalinti negalima: jos paslaugos turi rezervacijų");
         }
-        for (Service service : new ArrayList<>(company.getServices())) {
-            company.removeService(service);
-            Repositories.services().delete(service.getId());
-        }
-        for (Caretaker caretaker : new ArrayList<>(company.getCaretakers())) {
-            company.releaseCaretaker(caretaker);
-            Repositories.users().update(caretaker); // the caretaker stays, now without a company
-        }
-        Repositories.companies().delete(company.getId());
+        // One transaction: all steps are saved together, or none (e.g. no services deleted
+        // while the company itself stays).
+        Repositories.inTransaction(() -> {
+            for (Service service : new ArrayList<>(company.getServices())) {
+                company.removeService(service);
+                Repositories.services().delete(service.getId());
+            }
+            for (Caretaker caretaker : new ArrayList<>(company.getCaretakers())) {
+                company.releaseCaretaker(caretaker);
+                Repositories.users().update(caretaker); // the caretaker stays, now without a company
+            }
+            Repositories.companies().delete(company.getId());
+        });
     }
 
     /**
