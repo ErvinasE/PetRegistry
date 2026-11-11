@@ -2,6 +2,7 @@ package com.example.petregistry.service;
 
 import com.example.petregistry.model.Company;
 import com.example.petregistry.model.Service;
+import com.example.petregistry.model.ServiceLocation;
 import com.example.petregistry.model.ServiceStatus;
 import com.example.petregistry.model.ServiceType;
 import com.example.petregistry.repo.Repositories;
@@ -23,8 +24,11 @@ public class ServiceService {
         return Repositories.services().findAll();
     }
 
-    public List<Service> search(ServiceType type, Integer companyId, BigDecimal minPrice, BigDecimal maxPrice) {
-        return Repositories.services().search(type, companyId, minPrice, maxPrice);
+    public List<Service> search(ServiceType type, Integer companyId, BigDecimal minPrice, BigDecimal maxPrice,
+                                String title, Integer minDuration, Integer maxDuration,
+                                ServiceLocation location, ServiceStatus status) {
+        return Repositories.services().search(type, companyId, minPrice, maxPrice,
+                title, minDuration, maxDuration, location, status);
     }
 
     /** Only ACTIVE services can be booked (the reservation form's list). */

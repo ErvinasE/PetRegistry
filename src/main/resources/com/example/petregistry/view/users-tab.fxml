@@ -22,9 +22,11 @@
             </padding>
             <Label text="Paieška:"/>
             <TextField fx:id="textFilter" onAction="#onSearch" prefWidth="220.0"
-                       promptText="Prisijungimo vardas, vardas ar el. paštas"/>
+                       promptText="Vardas, el. paštas, telefonas, įmonė..."/>
             <Label text="Pareigos:"/>
-            <ComboBox fx:id="roleFilter" prefWidth="180.0" promptText="Visos"/>
+            <ComboBox fx:id="roleFilter" prefWidth="170.0" promptText="Visos"/>
+            <Label text="Užblokuotas:"/>
+            <ComboBox fx:id="blockedFilter" prefWidth="80.0" promptText="Visi"/>
             <Button onAction="#onSearch" text="Ieškoti"/>
             <Button onAction="#onShowAll" text="Rodyti visus"/>
         </HBox>

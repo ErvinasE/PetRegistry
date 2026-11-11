@@ -5,6 +5,7 @@ import com.example.petregistry.model.Reservation;
 import com.example.petregistry.model.ReservationStatus;
 import com.example.petregistry.repo.ReservationRepository;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.function.Function;
@@ -13,7 +14,8 @@ public class InMemoryReservationRepository extends InMemoryRepository<Reservatio
         implements ReservationRepository {
 
     @Override
-    public List<Reservation> search(ReservationStatus status, Integer ownerId, LocalDate from, LocalDate to) {
+    public List<Reservation> search(ReservationStatus status, Integer ownerId, LocalDate from, LocalDate to,
+                                    String text, BigDecimal minPrice, BigDecimal maxPrice) {
         return stream()
                 .filter(r -> status == null || r.getStatus() == status)
                 .filter(r -> matchesId(r.getOwner(), ownerId))
@@ -22,6 +24,13 @@ public class InMemoryReservationRepository extends InMemoryRepository<Reservatio
                         || (r.getStart() != null && !r.getStart().toLocalDate().isBefore(from)))
                 .filter(r -> to == null
                         || (r.getStart() != null && !r.getStart().toLocalDate().isAfter(to)))
+                .filter(r -> matchesText(r.getPet() == null ? null : r.getPet().getName(), text)
+                        || matchesText(r.getService() == null ? null : r.getService().getTitle(), text)
+                        || matchesText(r.getCaretaker() == null ? null : r.getCaretaker().getFullName(), text))
+                .filter(r -> minPrice == null
+                        || (r.getPrice() != null && r.getPrice().compareTo(minPrice) >= 0))
+                .filter(r -> maxPrice == null
+                        || (r.getPrice() != null && r.getPrice().compareTo(maxPrice) <= 0))
                 .toList();
     }
 

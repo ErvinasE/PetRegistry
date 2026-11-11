@@ -31,8 +31,8 @@ public class UserService {
         return Repositories.users().findAll();
     }
 
-    public List<User> search(String text, Role role) {
-        return Repositories.users().search(text, role);
+    public List<User> search(String text, Role role, Boolean blocked) {
+        return Repositories.users().search(text, role, blocked);
     }
 
     /** For owner choice lists (Pets tab, reservation form). */

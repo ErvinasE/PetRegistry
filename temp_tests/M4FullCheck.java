@@ -119,12 +119,12 @@ public class M4FullCheck {
         Caretaker tomas = (Caretaker) byUsername("tomas");
         Caretaker egle = (Caretaker) byUsername("egle");
         Caretaker lukas = (Caretaker) byUsername("lukas");
-        Company letenele = companies.search("Letenėlė", null).get(0);
-        Company uodegele = companies.search("Uodegėlė", null).get(0);
-        Pet reksas = pets.search("Reksas", null, null).get(0);
-        Pet murka = pets.search("Murka", null, null).get(0);
-        Service walking = services.search(ServiceType.DOG_WALKING, null, null, null).get(0);
-        Service grooming = services.search(ServiceType.GROOMING, null, null, null).get(0);
+        Company letenele = companies.search("Letenėlė", null, null).get(0);
+        Company uodegele = companies.search("Uodegėlė", null, null).get(0);
+        Pet reksas = pets.search("Reksas", null, null, null, null, null, null, null).get(0);
+        Pet murka = pets.search("Murka", null, null, null, null, null, null, null).get(0);
+        Service walking = services.search(ServiceType.DOG_WALKING, null, null, null, null, null, null, null, null).get(0);
+        Service grooming = services.search(ServiceType.GROOMING, null, null, null, null, null, null, null, null).get(0);
         LocalDateTime tomorrow = LocalDateTime.now().plusDays(1).withNano(0);
 
         System.out.println("---- ValidationException itself ----");
@@ -309,11 +309,11 @@ public class M4FullCheck {
         check("independent caretaker", "[caretaker]", errorsOf(() -> reservations.create(reservation(anna, reksas, walking, lukas, tomorrow))));
         check("no caretaker is allowed (0..1)", "OK", errorsOf(() -> reservations.create(reservation(anna, reksas, walking, null, tomorrow))));
         check("start in the past", "[start]", errorsOf(() -> reservations.create(reservation(anna, reksas, walking, tomas, LocalDateTime.now().minusHours(1)))));
-        Reservation completed = reservations.search(ReservationStatus.COMPLETED, null, null, null).get(0);
+        Reservation completed = reservations.search(ReservationStatus.COMPLETED, null, null, null, null, null, null).get(0);
         check("COMPLETED reservation in the past can still be edited", "OK", errorsOf(() -> reservations.update(completed)));
 
         System.out.println("---- Review rules ----");
-        Reservation pending = reservations.search(ReservationStatus.PENDING, null, null, null).get(0);
+        Reservation pending = reservations.search(ReservationStatus.PENDING, null, null, null, null, null, null).get(0);
         check("review on a not COMPLETED reservation", "[reservation]",
                 errorsOf(() -> reviews.create(review(pending.getOwner(), pending.getCaretaker(), 5), pending)));
         check("author not a participant", "[author]", errorsOf(() -> reviews.create(review(jonas, egle, 5), completed)));

@@ -19,7 +19,7 @@ public class AllSearchCheck {
         Pet rex = new Pet();
         rex.setName("Rex");
         pets.create(rex);
-        show("Pet name 'rex' with a null-name pet present (expect [Rex], no crash)", pets.search("rex", null, null));
+        show("Pet name 'rex' with a null-name pet present (expect [Rex], no crash)", pets.search("rex", null, null, null, null, null, null, null));
 
         // ---- User ----
         UserRepository users = new InMemoryUserRepository();
@@ -38,12 +38,12 @@ public class AllSearchCheck {
         Administrator admin = new Administrator();
         admin.setUsername("admin");
         users.create(admin); // no name, no email
-        show("User text null (expect 3)", users.search(null, null).size());
-        show("User text 'anna' (expect [Anna Kazlauskienė])", users.search("anna", null));
-        show("User text 'PETRAI' full name (expect [Tomas Petraitis])", users.search("PETRAI", null));
-        show("User text 'care.lt' email (expect [Tomas Petraitis])", users.search("care.lt", null));
-        show("User role CARETAKER (expect [Tomas Petraitis])", users.search(null, Role.CARETAKER));
-        show("User text 'anna' + role CARETAKER (expect [])", users.search("anna", Role.CARETAKER));
+        show("User text null (expect 3)", users.search(null, null, null).size());
+        show("User text 'anna' (expect [Anna Kazlauskienė])", users.search("anna", null, null));
+        show("User text 'PETRAI' full name (expect [Tomas Petraitis])", users.search("PETRAI", null, null));
+        show("User text 'care.lt' email (expect [Tomas Petraitis])", users.search("care.lt", null, null));
+        show("User role CARETAKER (expect [Tomas Petraitis])", users.search(null, Role.CARETAKER, null));
+        show("User text 'anna' + role CARETAKER (expect [])", users.search("anna", Role.CARETAKER, null));
 
         // ---- Company ----
         CompanyRepository companies = new InMemoryCompanyRepository();
@@ -55,9 +55,9 @@ public class AllSearchCheck {
         c2.setName("Uodegėlė");
         c2.setCity("Kaunas");
         companies.create(c2);
-        show("Company city 'vilnius' (expect [Letenėlė])", companies.search(null, "vilnius"));
-        show("Company name 'ėlė' (expect [Letenėlė, Uodegėlė])", companies.search("ėlė", null));
-        show("Company name 'uode' + city 'Vilnius' (expect [])", companies.search("uode", "Vilnius"));
+        show("Company city 'vilnius' (expect [Letenėlė])", companies.search(null, "vilnius", null));
+        show("Company name 'ėlė' (expect [Letenėlė, Uodegėlė])", companies.search("ėlė", null, null));
+        show("Company name 'uode' + city 'Vilnius' (expect [])", companies.search("uode", "Vilnius", null));
 
         // ---- Service ----
         ServiceRepository services = new InMemoryServiceRepository();
@@ -73,11 +73,11 @@ public class AllSearchCheck {
         vet.setPrice(new BigDecimal("45.50"));
         services.create(vet);
         c2.addService(vet);
-        show("Service type VETERINARY (expect [Vet])", services.search(ServiceType.VETERINARY, null, null, null));
-        show("Service company c1 (expect [Walk])", services.search(null, c1.getId(), null, null));
-        show("Service min 10.0 (scale differs from 10.00) (expect [Walk, Vet])", services.search(null, null, new BigDecimal("10.0"), null));
-        show("Service max 10 (expect [Walk])", services.search(null, null, null, new BigDecimal("10")));
-        show("Service 11..45 (expect [])", services.search(null, null, new BigDecimal("11"), new BigDecimal("45")));
+        show("Service type VETERINARY (expect [Vet])", services.search(ServiceType.VETERINARY, null, null, null, null, null, null, null, null));
+        show("Service company c1 (expect [Walk])", services.search(null, c1.getId(), null, null, null, null, null, null, null));
+        show("Service min 10.0 (scale differs from 10.00) (expect [Walk, Vet])", services.search(null, null, new BigDecimal("10.0"), null, null, null, null, null, null));
+        show("Service max 10 (expect [Walk])", services.search(null, null, null, new BigDecimal("10"), null, null, null, null, null));
+        show("Service 11..45 (expect [])", services.search(null, null, new BigDecimal("11"), new BigDecimal("45"), null, null, null, null, null));
 
         // ---- Reservation ----
         ReservationRepository reservations = new InMemoryReservationRepository();
@@ -94,11 +94,11 @@ public class AllSearchCheck {
         Reservation r3 = new Reservation(); // no start date
         r3.setService(vet);
         reservations.create(r3);
-        show("Reservation status CONFIRMED (expect 1 = r2)", reservations.search(ReservationStatus.CONFIRMED, null, null, null).size());
-        show("Reservation owner anna (expect 1 = r1)", reservations.search(null, anna.getId(), null, null).size());
-        show("Reservation from 12-01 to 12-01 (inclusive day) (expect 1 = r1)", reservations.search(null, null, LocalDate.of(2026, 12, 1), LocalDate.of(2026, 12, 1)).size());
-        show("Reservation to 12-05 (23:30 same day counts) (expect 2)", reservations.search(null, null, null, LocalDate.of(2026, 12, 5)).size());
-        show("Reservation from 12-02 (expect 1 = r2, r3 has no date)", reservations.search(null, null, LocalDate.of(2026, 12, 2), null).size());
+        show("Reservation status CONFIRMED (expect 1 = r2)", reservations.search(ReservationStatus.CONFIRMED, null, null, null, null, null, null).size());
+        show("Reservation owner anna (expect 1 = r1)", reservations.search(null, anna.getId(), null, null, null, null, null).size());
+        show("Reservation from 12-01 to 12-01 (inclusive day) (expect 1 = r1)", reservations.search(null, null, LocalDate.of(2026, 12, 1), LocalDate.of(2026, 12, 1), null, null, null).size());
+        show("Reservation to 12-05 (23:30 same day counts) (expect 2)", reservations.search(null, null, null, LocalDate.of(2026, 12, 5), null, null, null).size());
+        show("Reservation from 12-02 (expect 1 = r2, r3 has no date)", reservations.search(null, null, LocalDate.of(2026, 12, 2), null, null, null, null).size());
 
         // ---- Review ----
         ReviewRepository reviews = new InMemoryReviewRepository();

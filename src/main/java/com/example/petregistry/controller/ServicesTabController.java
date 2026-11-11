@@ -2,6 +2,7 @@ package com.example.petregistry.controller;
 
 import com.example.petregistry.model.Company;
 import com.example.petregistry.model.Service;
+import com.example.petregistry.model.ServiceLocation;
 import com.example.petregistry.model.ServiceStatus;
 import com.example.petregistry.model.ServiceType;
 import com.example.petregistry.service.BusinessRuleException;
@@ -28,10 +29,15 @@ public class ServicesTabController {
     private final ServiceService serviceService = new ServiceService();
     private final CompanyService companyService = new CompanyService();
 
+    @FXML private TextField titleFilter;
     @FXML private ComboBox<ServiceType> typeFilter;
     @FXML private ComboBox<Company> companyFilter;
+    @FXML private ComboBox<ServiceLocation> locationFilter;
+    @FXML private ComboBox<ServiceStatus> statusFilter;
     @FXML private TextField minPriceFilter;
     @FXML private TextField maxPriceFilter;
+    @FXML private TextField minDurationFilter;
+    @FXML private TextField maxDurationFilter;
     @FXML private TableView<Service> table;
     @FXML private TableColumn<Service, String> companyColumn;
     @FXML private Button pauseButton;
@@ -41,6 +47,10 @@ public class ServicesTabController {
         typeFilter.getItems().setAll(ServiceType.values());
         ComboBoxes.showPromptWhenEmpty(typeFilter);
         ComboBoxes.showPromptWhenEmpty(companyFilter);
+        locationFilter.getItems().setAll(ServiceLocation.values());
+        ComboBoxes.showPromptWhenEmpty(locationFilter);
+        statusFilter.getItems().setAll(ServiceStatus.values());
+        ComboBoxes.showPromptWhenEmpty(statusFilter);
 
         companyColumn.setCellValueFactory(cell -> {
             Company company = cell.getValue().getCompany();
@@ -73,7 +83,7 @@ public class ServicesTabController {
         loadTable();
     }
 
-    /** Reads the price filters first. A bad number shows an error and does NOT search. */
+    /** Reads the number filters first. A bad number shows an error and does NOT search. */
     private void loadTable() {
         BigDecimal minPrice;
         BigDecimal maxPrice;
@@ -84,9 +94,19 @@ public class ServicesTabController {
             Dialogs.error(window(), "Neteisingas filtras", "Kaina turi būti skaičius, pvz. 12,50");
             return;
         }
+        Integer minDuration;
+        Integer maxDuration;
+        try {
+            minDuration = parseMinutes(minDurationFilter.getText());
+            maxDuration = parseMinutes(maxDurationFilter.getText());
+        } catch (NumberFormatException e) {
+            Dialogs.error(window(), "Neteisingas filtras", "Trukmė turi būti sveikas skaičius minutėmis, pvz. 60");
+            return;
+        }
         Company company = companyFilter.getValue();
         Integer companyId = company == null ? null : company.getId();
-        table.getItems().setAll(serviceService.search(typeFilter.getValue(), companyId, minPrice, maxPrice));
+        table.getItems().setAll(serviceService.search(typeFilter.getValue(), companyId, minPrice, maxPrice,
+                titleFilter.getText(), minDuration, maxDuration, locationFilter.getValue(), statusFilter.getValue()));
     }
 
     @FXML
@@ -96,10 +116,15 @@ public class ServicesTabController {
 
     @FXML
     private void onShowAll() {
+        titleFilter.clear();
         typeFilter.setValue(null);
         companyFilter.setValue(null);
+        locationFilter.setValue(null);
+        statusFilter.setValue(null);
         minPriceFilter.clear();
         maxPriceFilter.clear();
+        minDurationFilter.clear();
+        maxDurationFilter.clear();
         loadTable();
     }
 
@@ -174,6 +199,14 @@ public class ServicesTabController {
             return null;
         }
         return new BigDecimal(text.trim().replace(',', '.'));
+    }
+
+    /** Empty → null (= no filter). Whole minutes only, e.g. "60". Not a whole number → NumberFormatException. */
+    private static Integer parseMinutes(String text) {
+        if (text == null || text.isBlank()) {
+            return null;
+        }
+        return Integer.parseInt(text.trim());
     }
 
     private Service selectedOrWarn() {

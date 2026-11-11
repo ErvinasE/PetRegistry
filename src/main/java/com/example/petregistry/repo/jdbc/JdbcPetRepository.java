@@ -8,6 +8,7 @@ import com.example.petregistry.repo.PetRepository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -57,7 +58,8 @@ public class JdbcPetRepository implements PetRepository {
     }
 
     @Override
-    public List<Pet> search(String name, Species species, Integer ownerId) {
+    public List<Pet> search(String name, Species species, Integer ownerId, PetSize size,
+                            LocalDate bornFrom, LocalDate bornTo, Double minWeight, Double maxWeight) {
         StringBuilder sql = new StringBuilder(SELECT).append(" WHERE 1 = 1");
         List<Object> params = new ArrayList<>();
         if (!Sql.blank(name)) {
@@ -71,6 +73,27 @@ public class JdbcPetRepository implements PetRepository {
         if (ownerId != null) {
             sql.append(" AND p.owner_id = ?");
             params.add(ownerId);
+        }
+        if (size != null) {
+            sql.append(" AND p.size = ?");
+            params.add(size);
+        }
+        // birth_date is a DATE column (no time), so >= and <= include both end days
+        if (bornFrom != null) {
+            sql.append(" AND p.birth_date >= ?");
+            params.add(bornFrom);
+        }
+        if (bornTo != null) {
+            sql.append(" AND p.birth_date <= ?");
+            params.add(bornTo);
+        }
+        if (minWeight != null) {
+            sql.append(" AND p.weight_kg >= ?");
+            params.add(minWeight);
+        }
+        if (maxWeight != null) {
+            sql.append(" AND p.weight_kg <= ?");
+            params.add(maxWeight);
         }
         sql.append(" ORDER BY p.id");
         return Sql.list(sql.toString(), JdbcPetRepository::mapFull, params.toArray());

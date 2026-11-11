@@ -1,6 +1,8 @@
 package com.example.petregistry.repo;
 
 import com.example.petregistry.model.Service;
+import com.example.petregistry.model.ServiceLocation;
+import com.example.petregistry.model.ServiceStatus;
 import com.example.petregistry.model.ServiceType;
 
 import java.math.BigDecimal;
@@ -15,6 +17,13 @@ public interface ServiceRepository extends Repository<Service> {
      * @param companyId id of the company that offers it
      * @param minPrice  price at least this (inclusive)
      * @param maxPrice  price at most this (inclusive)
+     * @param title       part of the title, case-insensitive (null or blank = no filter)
+     * @param minDuration duration in minutes at least this (inclusive)
+     * @param maxDuration duration in minutes at most this (inclusive)
+     * @param location    exact location
+     * @param status      exact status
      */
-    List<Service> search(ServiceType type, Integer companyId, BigDecimal minPrice, BigDecimal maxPrice);
+    List<Service> search(ServiceType type, Integer companyId, BigDecimal minPrice, BigDecimal maxPrice,
+                         String title, Integer minDuration, Integer maxDuration,
+                         ServiceLocation location, ServiceStatus status);
 }

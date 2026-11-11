@@ -40,9 +40,9 @@ public class M3FullCheck {
 
         // ---- Seed counts from BUILD_PLAN ----
         check("companies", 2, companies.findAll().size());
-        check("managers", 2, users.search(null, Role.COMPANY_MANAGER).size());
-        check("caretakers", 3, users.search(null, Role.CARETAKER).size());
-        check("owners", 3, users.search(null, Role.PET_OWNER).size());
+        check("managers", 2, users.search(null, Role.COMPANY_MANAGER, null).size());
+        check("caretakers", 3, users.search(null, Role.CARETAKER, null).size());
+        check("owners", 3, users.search(null, Role.PET_OWNER, null).size());
         check("pets", 5, pets.findAll().size());
         check("services", 5, services.findAll().size());
         check("reservations", 5, reservations.findAll().size());
@@ -93,7 +93,7 @@ public class M3FullCheck {
         check("countByPet unknown", 0, reservations.countByPet(999));
 
         // ---- Reviews ----
-        Reservation completed = reservations.search(ReservationStatus.COMPLETED, null, null, null).get(0);
+        Reservation completed = reservations.search(ReservationStatus.COMPLETED, null, null, null, null, null, null).get(0);
         check("reviews of COMPLETED reservation", 2, reviews.findByReservation(completed.getId()).size());
         check("reservation.getReviews() in sync", 2, completed.getReviews().size());
         check("reviews about Eglė", 1, reviews.findByTarget(egle).size());

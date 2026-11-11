@@ -27,6 +27,7 @@ public class UsersTabController {
 
     @FXML private TextField textFilter;
     @FXML private ComboBox<Role> roleFilter;
+    @FXML private ComboBox<String> blockedFilter;
     @FXML private TableView<User> table;
     @FXML private TableColumn<User, String> companyColumn;
     @FXML private TableColumn<User, String> blockedColumn;
@@ -36,6 +37,7 @@ public class UsersTabController {
     private void initialize() {
         roleFilter.getItems().setAll(Role.values());
         ComboBoxes.showPromptWhenEmpty(roleFilter);
+        ComboBoxes.fillYesNo(blockedFilter);
 
         companyColumn.setCellValueFactory(cell -> new SimpleStringProperty(companyText(cell.getValue())));
         blockedColumn.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().isBlocked() ? "Taip" : ""));
@@ -60,7 +62,8 @@ public class UsersTabController {
 
     /** Reloads the table (keeping the current filter). MainController also calls it when this tab is opened. */
     public void refresh() {
-        table.getItems().setAll(userService.search(textFilter.getText(), roleFilter.getValue()));
+        table.getItems().setAll(userService.search(textFilter.getText(), roleFilter.getValue(),
+                ComboBoxes.yesNoValue(blockedFilter)));
     }
 
     @FXML
@@ -72,6 +75,7 @@ public class UsersTabController {
     private void onShowAll() {
         textFilter.clear();
         roleFilter.setValue(null);
+        blockedFilter.setValue(null);
         refresh();
     }
 

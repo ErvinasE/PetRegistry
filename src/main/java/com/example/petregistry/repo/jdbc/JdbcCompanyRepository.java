@@ -53,16 +53,23 @@ public class JdbcCompanyRepository implements CompanyRepository {
     }
 
     @Override
-    public List<Company> search(String name, String city) {
+    public List<Company> search(String text, String city, Boolean active) {
         StringBuilder sql = new StringBuilder(SELECT).append(" WHERE 1 = 1");
         List<Object> params = new ArrayList<>();
-        if (!Sql.blank(name)) {
-            sql.append(" AND c.name LIKE ?");
-            params.add(Sql.contains(name));
+        if (!Sql.blank(text)) {
+            sql.append(" AND (c.name LIKE ? OR c.company_code LIKE ? OR c.address LIKE ?)");
+            String pattern = Sql.contains(text);
+            params.add(pattern);
+            params.add(pattern);
+            params.add(pattern);
         }
         if (!Sql.blank(city)) {
             sql.append(" AND c.city LIKE ?");
             params.add(Sql.contains(city));
+        }
+        if (active != null) {
+            sql.append(" AND c.active = ?");
+            params.add(active);
         }
         sql.append(" ORDER BY c.id");
         return Sql.list(sql.toString(), JdbcCompanyRepository::mapFull, params.toArray());

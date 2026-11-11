@@ -113,9 +113,9 @@ public class M12Check {
         c.setCity("Vilnius 2");
         companies.update(c);
         check("update → city saved", "Vilnius 2".equals(Repositories.companies().findById(c.getId()).orElseThrow().getCity()));
-        check("search name 'lete' (case-insensitive LIKE) → Letenėlė", companies.search("lete", null).equals(List.of(c)));
-        check("search city 'kaun' → Uodegėlė", companies.search(null, "kaun").equals(List.of(c2)));
-        check("search both empty → both", companies.search("", " ").size() == 2);
+        check("search name 'lete' (case-insensitive LIKE) → Letenėlė", companies.search("lete", null, null).equals(List.of(c)));
+        check("search city 'kaun' → Uodegėlė", companies.search(null, "kaun", null).equals(List.of(c2)));
+        check("search both empty → both", companies.search("", " ", null).size() == 2);
         check("findByCode", Repositories.companies().findByCode("987654321").orElseThrow().equals(c2));
         try {
             Company dup = new Company();
@@ -158,10 +158,10 @@ public class M12Check {
                 && tomasDb.getCompany().getCaretakers().contains(tomasDb));
         check("independent caretaker has company NULL", ((Caretaker) Repositories.users().findById(lukas.getId()).orElseThrow()).isIndependent());
         check("password hash stored, checkPassword works on the reloaded user", rasaDb.checkPassword("Slaptazodis1"));
-        check("search text 'kazl' → Anna", users.search("kazl", null).equals(List.of(anna)));
-        check("search role CARETAKER → Tomas, Lukas", users.search(null, Role.CARETAKER).equals(List.of(tomas, lukas)));
-        check("search \"' OR 1=1 --\" finds nothing (PreparedStatement: it's just text)", users.search("' OR 1=1 --", null).isEmpty());
-        check("search '_' is not a wildcard (escaped)", users.search("_", null).isEmpty());
+        check("search text 'kazl' → Anna", users.search("kazl", null, null).equals(List.of(anna)));
+        check("search role CARETAKER → Tomas, Lukas", users.search(null, Role.CARETAKER, null).equals(List.of(tomas, lukas)));
+        check("search \"' OR 1=1 --\" finds nothing (PreparedStatement: it's just text)", users.search("' OR 1=1 --", null, null).isEmpty());
+        check("search '_' is not a wildcard (escaped)", users.search("_", null, null).isEmpty());
         check("findByUsername is case-insensitive ('TOMAS')", Repositories.users().findByUsername("TOMAS").orElseThrow().equals(tomas));
         check("findByEmail", Repositories.users().findByEmail("anna@test.lt").orElseThrow().equals(anna));
         check("countManagersOf(Letenėlė) = 1", Repositories.users().countManagersOf(c.getId()) == 1);
@@ -196,10 +196,10 @@ public class M12Check {
         check("update: sets replaced (delete + reinsert)", walk2.getAllowedSpecies().equals(EnumSet.of(Species.DOG, Species.CAT))
                 && walk2.getAllowedSizes().equals(EnumSet.of(PetSize.LARGE)));
         check("company.services filled by a query", Repositories.companies().findById(c.getId()).orElseThrow().getServices().equals(List.of(walk)));
-        check("search type VETERINARY → vet", services.search(ServiceType.VETERINARY, null, null, null).equals(List.of(vet)));
-        check("search price 20–50 → vet", services.search(null, null, new BigDecimal("20"), new BigDecimal("50")).equals(List.of(vet)));
-        check("search company Letenėlė → walk", services.search(null, c.getId(), null, null).equals(List.of(walk)));
-        check("search price 15–15 (inclusive) → walk", services.search(null, null, new BigDecimal("15"), new BigDecimal("15.00")).equals(List.of(walk)));
+        check("search type VETERINARY → vet", services.search(ServiceType.VETERINARY, null, null, null, null, null, null, null, null).equals(List.of(vet)));
+        check("search price 20–50 → vet", services.search(null, null, new BigDecimal("20"), new BigDecimal("50"), null, null, null, null, null).equals(List.of(vet)));
+        check("search company Letenėlė → walk", services.search(null, c.getId(), null, null, null, null, null, null, null).equals(List.of(walk)));
+        check("search price 15–15 (inclusive) → walk", services.search(null, null, new BigDecimal("15"), new BigDecimal("15.00"), null, null, null, null, null).equals(List.of(walk)));
         services.setTemporarilyUnavailable(vet, true);
         check("pause saved", Repositories.services().findById(vet.getId()).orElseThrow().getStatus() == ServiceStatus.TEMPORARILY_UNAVAILABLE);
         services.setTemporarilyUnavailable(vet, false);
@@ -222,8 +222,8 @@ public class M12Check {
         murka.setNotes("Mėgsta miegoti");
         pets.update(murka, anna);
         check("update notes", "Mėgsta miegoti".equals(Repositories.pets().findById(murka.getId()).orElseThrow().getNotes()));
-        check("search species CAT → Murka", pets.search(null, Species.CAT, null).equals(List.of(murka)));
-        check("search owner Anna + name 'rek' → Reksas", pets.search("rek", null, anna.getId()).equals(List.of(reksas)));
+        check("search species CAT → Murka", pets.search(null, Species.CAT, null, null, null, null, null, null).equals(List.of(murka)));
+        check("search owner Anna + name 'rek' → Reksas", pets.search("rek", null, anna.getId(), null, null, null, null, null).equals(List.of(reksas)));
 
         // ============================================================ Reservation
         title("Reservation: create, status, search, counts");
@@ -255,11 +255,11 @@ public class M12Check {
         reservations.changeStatus(r, ReservationStatus.IN_PROGRESS);
         reservations.changeStatus(r, ReservationStatus.COMPLETED);
         check("status changes saved → COMPLETED", Repositories.reservations().findById(r.getId()).orElseThrow().getStatus() == ReservationStatus.COMPLETED);
-        check("search status COMPLETED → r", reservations.search(ReservationStatus.COMPLETED, null, null, null).equals(List.of(r)));
+        check("search status COMPLETED → r", reservations.search(ReservationStatus.COMPLETED, null, null, null, null, null, null).equals(List.of(r)));
         check("search from = to = the start day (both inclusive) → r",
-                reservations.search(null, null, start.toLocalDate(), start.toLocalDate()).equals(List.of(r)));
+                reservations.search(null, null, start.toLocalDate(), start.toLocalDate(), null, null, null).equals(List.of(r)));
         check("search from day+1 → only the other one",
-                reservations.search(null, anna.getId(), start.toLocalDate().plusDays(1), null).equals(List.of(noCaretaker)));
+                reservations.search(null, anna.getId(), start.toLocalDate().plusDays(1), null, null, null, null).equals(List.of(noCaretaker)));
         check("countByPet / Owner / Caretaker / Service (COUNT(*))", Repositories.reservations().countByPet(reksas.getId()) == 1
                 && Repositories.reservations().countByOwner(anna.getId()) == 2
                 && Repositories.reservations().countByCaretaker(tomas.getId()) == 1

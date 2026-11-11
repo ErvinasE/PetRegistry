@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -19,10 +20,13 @@
             <padding>
                 <Insets bottom="8.0" left="8.0" right="8.0" top="8.0"/>
             </padding>
-            <Label text="Pavadinimas:"/>
-            <TextField fx:id="nameFilter" onAction="#onSearch" prefWidth="160.0" promptText="Pavadinimo dalis"/>
+            <Label text="Paieška:"/>
+            <TextField fx:id="textFilter" onAction="#onSearch" prefWidth="220.0"
+                       promptText="Pavadinimas, kodas ar adresas"/>
             <Label text="Miestas:"/>
             <TextField fx:id="cityFilter" onAction="#onSearch" prefWidth="130.0" promptText="Miesto dalis"/>
+            <Label text="Aktyvi:"/>
+            <ComboBox fx:id="activeFilter" prefWidth="80.0" promptText="Visos"/>
             <Button onAction="#onSearch" text="Ieškoti"/>
             <Button onAction="#onShowAll" text="Rodyti visus"/>
         </HBox>

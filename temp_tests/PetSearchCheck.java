@@ -29,15 +29,15 @@ public class PetSearchCheck {
         anna.addPet(mia);
         jonas.addPet(rexa);
 
-        System.out.println("no filters (expect 4): " + repo.search(null, null, null).size());
-        System.out.println("blank name (expect 4): " + repo.search("  ", null, null).size());
-        System.out.println("name 'REX' case-insens (expect 1 Rex): " + repo.search("REX", null, null));
-        System.out.println("name 'x' (expect Rex, Maxi): " + repo.search("x", null, null));
-        System.out.println("species CAT (expect Mia, Stray): " + repo.search(null, Species.CAT, null));
-        System.out.println("owner 10 (expect Rex, Mia): " + repo.search(null, null, 10));
-        System.out.println("owner 20 (expect Maxi): " + repo.search(null, null, 20));
-        System.out.println("owner 10 + CAT (expect Mia): " + repo.search(null, Species.CAT, 10));
-        System.out.println("owner 10 + DOG + name 'm' (expect none): " + repo.search("m", Species.DOG, 10));
-        System.out.println("owner 99 (expect none): " + repo.search(null, null, 99));
+        System.out.println("no filters (expect 4): " + repo.search(null, null, null, null, null, null, null, null).size());
+        System.out.println("blank name (expect 4): " + repo.search("  ", null, null, null, null, null, null, null).size());
+        System.out.println("name 'REX' case-insens (expect 1 Rex): " + repo.search("REX", null, null, null, null, null, null, null));
+        System.out.println("name 'x' (expect Rex, Maxi): " + repo.search("x", null, null, null, null, null, null, null));
+        System.out.println("species CAT (expect Mia, Stray): " + repo.search(null, Species.CAT, null, null, null, null, null, null));
+        System.out.println("owner 10 (expect Rex, Mia): " + repo.search(null, null, 10, null, null, null, null, null));
+        System.out.println("owner 20 (expect Maxi): " + repo.search(null, null, 20, null, null, null, null, null));
+        System.out.println("owner 10 + CAT (expect Mia): " + repo.search(null, Species.CAT, 10, null, null, null, null, null));
+        System.out.println("owner 10 + DOG + name 'm' (expect none): " + repo.search("m", Species.DOG, 10, null, null, null, null, null));
+        System.out.println("owner 99 (expect none): " + repo.search(null, null, 99, null, null, null, null, null));
     }
 }

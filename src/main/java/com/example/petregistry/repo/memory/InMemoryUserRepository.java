@@ -1,6 +1,7 @@
 package com.example.petregistry.repo.memory;
 
 import com.example.petregistry.model.Caretaker;
+import com.example.petregistry.model.Company;
 import com.example.petregistry.model.CompanyManager;
 import com.example.petregistry.model.PetOwner;
 import com.example.petregistry.model.Role;
@@ -13,13 +14,27 @@ import java.util.Optional;
 public class InMemoryUserRepository extends InMemoryRepository<User> implements UserRepository {
 
     @Override
-    public List<User> search(String text, Role role) {
+    public List<User> search(String text, Role role, Boolean blocked) {
         return stream()
                 .filter(u -> matchesText(u.getUsername(), text)
                         || matchesText(u.getFullName(), text)
-                        || matchesText(u.getEmail(), text))
+                        || matchesText(u.getEmail(), text)
+                        || matchesText(u.getPhone(), text)
+                        || matchesText(companyNameOf(u), text))
                 .filter(u -> role == null || u.getRole() == role)
+                .filter(u -> blocked == null || u.isBlocked() == blocked)
                 .toList();
+    }
+
+    /** Managers and caretakers can have a company; everyone else: null. */
+    private static String companyNameOf(User user) {
+        Company company = null;
+        if (user instanceof CompanyManager manager) {
+            company = manager.getCompany();
+        } else if (user instanceof Caretaker caretaker) {
+            company = caretaker.getCompany();
+        }
+        return company == null ? null : company.getName();
     }
 
     @Override

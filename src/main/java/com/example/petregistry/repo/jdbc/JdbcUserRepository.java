@@ -75,20 +75,26 @@ public class JdbcUserRepository implements UserRepository {
 
     /** The WHERE is built from the filters that are set. Each "?" gets its value in the same order. */
     @Override
-    public List<User> search(String text, Role role) {
+    public List<User> search(String text, Role role, Boolean blocked) {
         StringBuilder sql = new StringBuilder(SELECT).append(" WHERE 1 = 1");
         List<Object> params = new ArrayList<>();
         if (!Sql.blank(text)) {
-            // utf8mb4_unicode_ci collation: LIKE ignores upper/lower case, like the in-memory search
-            sql.append(" AND (u.username LIKE ? OR CONCAT(u.first_name, ' ', u.last_name) LIKE ? OR u.email LIKE ?)");
+            // utf8mb4_unicode_ci collation: LIKE ignores upper/lower case, like the in-memory search.
+            // The company name is in another table, so a subquery finds the ids of matching companies.
+            sql.append(" AND (u.username LIKE ? OR CONCAT(u.first_name, ' ', u.last_name) LIKE ? OR u.email LIKE ?"
+                    + " OR u.phone LIKE ? OR u.company_id IN (SELECT c.id FROM companies c WHERE c.name LIKE ?))");
             String pattern = Sql.contains(text);
-            params.add(pattern);
-            params.add(pattern);
-            params.add(pattern);
+            for (int i = 0; i < 5; i++) { // 5 "?" above, all get the same pattern
+                params.add(pattern);
+            }
         }
         if (role != null) {
             sql.append(" AND u.role = ?");
             params.add(role);
+        }
+        if (blocked != null) {
+            sql.append(" AND u.blocked = ?");
+            params.add(blocked);
         }
         sql.append(" ORDER BY u.id");
         return Sql.list(sql.toString(), JdbcUserRepository::mapFull, params.toArray());

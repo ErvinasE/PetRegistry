@@ -2,6 +2,7 @@ package com.example.petregistry.service;
 
 import com.example.petregistry.model.Pet;
 import com.example.petregistry.model.PetOwner;
+import com.example.petregistry.model.PetSize;
 import com.example.petregistry.model.Species;
 import com.example.petregistry.repo.Repositories;
 
@@ -19,8 +20,9 @@ public class PetService {
         return Repositories.pets().findAll();
     }
 
-    public List<Pet> search(String name, Species species, Integer ownerId) {
-        return Repositories.pets().search(name, species, ownerId);
+    public List<Pet> search(String name, Species species, Integer ownerId, PetSize size,
+                            LocalDate bornFrom, LocalDate bornTo, Double minWeight, Double maxWeight) {
+        return Repositories.pets().search(name, species, ownerId, size, bornFrom, bornTo, minWeight, maxWeight);
     }
 
     /**

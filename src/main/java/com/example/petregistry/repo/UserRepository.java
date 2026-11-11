@@ -13,10 +13,11 @@ public interface UserRepository extends Repository<User> {
     /**
      * Filtered list for the Users tab. A null (or blank text) argument means "don't filter by this".
      *
-     * @param text part of the username, full name or email, case-insensitive
-     * @param role exact role
+     * @param text    part of the username, full name, email, phone or company name, case-insensitive
+     * @param role    exact role
+     * @param blocked true = only blocked users, false = only not blocked
      */
-    List<User> search(String text, Role role);
+    List<User> search(String text, Role role, Boolean blocked);
 
     /** For the company delete rule: how many managers work for this company. */
     int countManagersOf(int companyId);

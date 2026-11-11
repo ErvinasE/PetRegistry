@@ -16,9 +16,11 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.input.MouseButton;
 import javafx.stage.Window;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
@@ -34,6 +36,9 @@ public class ReservationsTabController {
     @FXML private ComboBox<PetOwner> ownerFilter;
     @FXML private DatePicker fromFilter;
     @FXML private DatePicker toFilter;
+    @FXML private TextField textFilter;
+    @FXML private TextField minPriceFilter;
+    @FXML private TextField maxPriceFilter;
     @FXML private TableView<Reservation> table;
     @FXML private TableColumn<Reservation, String> startColumn;
     @FXML private TableColumn<Reservation, String> endColumn;
@@ -85,9 +90,27 @@ public class ReservationsTabController {
             Dialogs.error(window(), "Neteisingas filtras", "Data „Nuo“ negali būti vėlesnė už datą „Iki“.");
             return;
         }
+        BigDecimal minPrice;
+        BigDecimal maxPrice;
+        try {
+            minPrice = parsePrice(minPriceFilter.getText());
+            maxPrice = parsePrice(maxPriceFilter.getText());
+        } catch (NumberFormatException e) {
+            Dialogs.error(window(), "Neteisingas filtras", "Kaina turi būti skaičius, pvz. 12,50");
+            return;
+        }
         PetOwner owner = ownerFilter.getValue();
         Integer ownerId = owner == null ? null : owner.getId();
-        table.getItems().setAll(reservationService.search(statusFilter.getValue(), ownerId, from, to));
+        table.getItems().setAll(reservationService.search(statusFilter.getValue(), ownerId, from, to,
+                textFilter.getText(), minPrice, maxPrice));
+    }
+
+    /** Empty → null (= no filter). Accepts "12,50" and "12.50". Not a number → NumberFormatException. */
+    private static BigDecimal parsePrice(String text) {
+        if (text == null || text.isBlank()) {
+            return null;
+        }
+        return new BigDecimal(text.trim().replace(',', '.'));
     }
 
     @FXML
@@ -101,6 +124,9 @@ public class ReservationsTabController {
         ownerFilter.setValue(null);
         fromFilter.setValue(null);
         toFilter.setValue(null);
+        textFilter.clear();
+        minPriceFilter.clear();
+        maxPriceFilter.clear();
         loadTable();
     }
 

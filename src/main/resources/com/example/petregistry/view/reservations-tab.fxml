@@ -7,30 +7,43 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.cell.PropertyValueFactory?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
 <BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.example.petregistry.controller.ReservationsTabController">
 
-    <!-- Filter bar. An empty filter means "don't filter by this". -->
+    <!-- Filter bar (two rows, it does not fit in one). An empty filter means "don't filter by this". -->
     <top>
-        <HBox alignment="CENTER_LEFT" spacing="8.0">
+        <VBox spacing="6.0">
             <padding>
                 <Insets bottom="8.0" left="8.0" right="8.0" top="8.0"/>
             </padding>
-            <Label text="Būsena:"/>
-            <ComboBox fx:id="statusFilter" prefWidth="120.0" promptText="Visos"/>
-            <Label text="Šeimininkas:"/>
-            <ComboBox fx:id="ownerFilter" prefWidth="160.0" promptText="Visi"/>
-            <Label text="Nuo:"/>
-            <DatePicker fx:id="fromFilter" editable="false" prefWidth="120.0"/>
-            <Label text="Iki:"/>
-            <DatePicker fx:id="toFilter" editable="false" prefWidth="120.0"/>
-            <Button onAction="#onSearch" text="Ieškoti"/>
-            <Button onAction="#onShowAll" text="Rodyti visus"/>
-        </HBox>
+            <HBox alignment="CENTER_LEFT" spacing="8.0">
+                <Label text="Būsena:"/>
+                <ComboBox fx:id="statusFilter" prefWidth="120.0" promptText="Visos"/>
+                <Label text="Šeimininkas:"/>
+                <ComboBox fx:id="ownerFilter" prefWidth="160.0" promptText="Visi"/>
+                <Label text="Nuo:"/>
+                <DatePicker fx:id="fromFilter" editable="false" prefWidth="120.0"/>
+                <Label text="Iki:"/>
+                <DatePicker fx:id="toFilter" editable="false" prefWidth="120.0"/>
+            </HBox>
+            <HBox alignment="CENTER_LEFT" spacing="8.0">
+                <Label text="Paieška:"/>
+                <TextField fx:id="textFilter" onAction="#onSearch" prefWidth="240.0"
+                           promptText="Gyvūnas, paslauga ar prižiūrėtojas"/>
+                <Label text="Kaina nuo:"/>
+                <TextField fx:id="minPriceFilter" onAction="#onSearch" prefWidth="60.0"/>
+                <Label text="iki:"/>
+                <TextField fx:id="maxPriceFilter" onAction="#onSearch" prefWidth="60.0"/>
+                <Button onAction="#onSearch" text="Ieškoti"/>
+                <Button onAction="#onShowAll" text="Rodyti visus"/>
+            </HBox>
+        </VBox>
     </top>
 
     <center>

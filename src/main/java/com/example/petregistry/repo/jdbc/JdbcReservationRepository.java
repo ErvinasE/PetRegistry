@@ -7,6 +7,7 @@ import com.example.petregistry.model.ReservationStatus;
 import com.example.petregistry.model.Review;
 import com.example.petregistry.repo.ReservationRepository;
 
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -73,7 +74,8 @@ public class JdbcReservationRepository implements ReservationRepository {
 
     /** The date filter includes both days: from = day 00:00, to = before the next day 00:00. */
     @Override
-    public List<Reservation> search(ReservationStatus status, Integer ownerId, LocalDate from, LocalDate to) {
+    public List<Reservation> search(ReservationStatus status, Integer ownerId, LocalDate from, LocalDate to,
+                                    String text, BigDecimal minPrice, BigDecimal maxPrice) {
         StringBuilder sql = new StringBuilder(SELECT).append(" WHERE 1 = 1");
         List<Object> params = new ArrayList<>();
         if (status != null) {
@@ -91,6 +93,25 @@ public class JdbcReservationRepository implements ReservationRepository {
         if (to != null) {
             sql.append(" AND r.start_at < ?");
             params.add(to.plusDays(1).atStartOfDay());
+        }
+        if (!Sql.blank(text)) {
+            // The names are in other tables: each subquery finds the ids whose name matches.
+            sql.append(" AND (r.pet_id IN (SELECT p.id FROM pets p WHERE p.name LIKE ?)"
+                    + " OR r.service_id IN (SELECT s.id FROM services s WHERE s.title LIKE ?)"
+                    + " OR r.caretaker_id IN (SELECT u.id FROM users u"
+                    + "                       WHERE CONCAT(u.first_name, ' ', u.last_name) LIKE ?))");
+            String pattern = Sql.contains(text);
+            params.add(pattern);
+            params.add(pattern);
+            params.add(pattern);
+        }
+        if (minPrice != null) {
+            sql.append(" AND r.price >= ?");
+            params.add(minPrice);
+        }
+        if (maxPrice != null) {
+            sql.append(" AND r.price <= ?");
+            params.add(maxPrice);
         }
         sql.append(" ORDER BY r.id");
         return Sql.list(sql.toString(), this::mapRow, params.toArray());

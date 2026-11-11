@@ -78,7 +78,9 @@ public class JdbcServiceRepository implements ServiceRepository {
     }
 
     @Override
-    public List<Service> search(ServiceType type, Integer companyId, BigDecimal minPrice, BigDecimal maxPrice) {
+    public List<Service> search(ServiceType type, Integer companyId, BigDecimal minPrice, BigDecimal maxPrice,
+                                String title, Integer minDuration, Integer maxDuration,
+                                ServiceLocation location, ServiceStatus status) {
         StringBuilder sql = new StringBuilder(SELECT).append(" WHERE 1 = 1");
         List<Object> params = new ArrayList<>();
         if (type != null) {
@@ -96,6 +98,26 @@ public class JdbcServiceRepository implements ServiceRepository {
         if (maxPrice != null) {
             sql.append(" AND s.price <= ?");
             params.add(maxPrice);
+        }
+        if (!Sql.blank(title)) {
+            sql.append(" AND s.title LIKE ?");
+            params.add(Sql.contains(title));
+        }
+        if (minDuration != null) {
+            sql.append(" AND s.duration_minutes >= ?");
+            params.add(minDuration);
+        }
+        if (maxDuration != null) {
+            sql.append(" AND s.duration_minutes <= ?");
+            params.add(maxDuration);
+        }
+        if (location != null) {
+            sql.append(" AND s.location = ?");
+            params.add(location);
+        }
+        if (status != null) {
+            sql.append(" AND s.status = ?");
+            params.add(status);
         }
         sql.append(" ORDER BY s.id");
         return Sql.list(sql.toString(), JdbcServiceRepository::mapFull, params.toArray());

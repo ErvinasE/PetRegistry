@@ -10,27 +10,42 @@
 <?import javafx.scene.control.cell.PropertyValueFactory?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
 <BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.example.petregistry.controller.ServicesTabController">
 
-    <!-- Filter bar. An empty filter means "don't filter by this". -->
+    <!-- Filter bar (two rows, it does not fit in one). An empty filter means "don't filter by this". -->
     <top>
-        <HBox alignment="CENTER_LEFT" spacing="8.0">
+        <VBox spacing="6.0">
             <padding>
                 <Insets bottom="8.0" left="8.0" right="8.0" top="8.0"/>
             </padding>
-            <Label text="Tipas:"/>
-            <ComboBox fx:id="typeFilter" prefWidth="170.0" promptText="Visi"/>
-            <Label text="Įmonė:"/>
-            <ComboBox fx:id="companyFilter" prefWidth="150.0" promptText="Visos"/>
-            <Label text="Kaina nuo:"/>
-            <TextField fx:id="minPriceFilter" onAction="#onSearch" prefWidth="70.0"/>
-            <Label text="iki:"/>
-            <TextField fx:id="maxPriceFilter" onAction="#onSearch" prefWidth="70.0"/>
-            <Button onAction="#onSearch" text="Ieškoti"/>
-            <Button onAction="#onShowAll" text="Rodyti visus"/>
-        </HBox>
+            <HBox alignment="CENTER_LEFT" spacing="8.0">
+                <Label text="Pavadinimas:"/>
+                <TextField fx:id="titleFilter" onAction="#onSearch" prefWidth="140.0" promptText="Pavadinimo dalis"/>
+                <Label text="Tipas:"/>
+                <ComboBox fx:id="typeFilter" prefWidth="160.0" promptText="Visi"/>
+                <Label text="Įmonė:"/>
+                <ComboBox fx:id="companyFilter" prefWidth="150.0" promptText="Visos"/>
+                <Label text="Vieta:"/>
+                <ComboBox fx:id="locationFilter" prefWidth="150.0" promptText="Visos"/>
+            </HBox>
+            <HBox alignment="CENTER_LEFT" spacing="8.0">
+                <Label text="Būsena:"/>
+                <ComboBox fx:id="statusFilter" prefWidth="160.0" promptText="Visos"/>
+                <Label text="Kaina nuo:"/>
+                <TextField fx:id="minPriceFilter" onAction="#onSearch" prefWidth="60.0"/>
+                <Label text="iki:"/>
+                <TextField fx:id="maxPriceFilter" onAction="#onSearch" prefWidth="60.0"/>
+                <Label text="Trukmė (min.) nuo:"/>
+                <TextField fx:id="minDurationFilter" onAction="#onSearch" prefWidth="60.0"/>
+                <Label text="iki:"/>
+                <TextField fx:id="maxDurationFilter" onAction="#onSearch" prefWidth="60.0"/>
+                <Button onAction="#onSearch" text="Ieškoti"/>
+                <Button onAction="#onShowAll" text="Rodyti visus"/>
+            </HBox>
+        </VBox>
     </top>
 
     <center>

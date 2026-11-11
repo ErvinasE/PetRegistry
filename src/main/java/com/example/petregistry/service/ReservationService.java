@@ -11,6 +11,7 @@ import com.example.petregistry.model.Service;
 import com.example.petregistry.model.ServiceStatus;
 import com.example.petregistry.repo.Repositories;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -29,8 +30,9 @@ public class ReservationService {
         return Repositories.reservations().findAll();
     }
 
-    public List<Reservation> search(ReservationStatus status, Integer ownerId, LocalDate from, LocalDate to) {
-        return Repositories.reservations().search(status, ownerId, from, to);
+    public List<Reservation> search(ReservationStatus status, Integer ownerId, LocalDate from, LocalDate to,
+                                    String text, BigDecimal minPrice, BigDecimal maxPrice) {
+        return Repositories.reservations().search(status, ownerId, from, to, text, minPrice, maxPrice);
     }
 
     /** end = start + service duration. The price is COPIED from the service, so later price changes don't rewrite old bookings. */

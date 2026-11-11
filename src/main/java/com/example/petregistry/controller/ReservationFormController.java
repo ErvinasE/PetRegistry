@@ -287,7 +287,8 @@ public class ReservationFormController {
         if (owner == null) {
             petBox.getItems().clear();
         } else {
-            petBox.getItems().setAll(petService.search(null, null, owner.getId()));
+            // Only the owner filter is set; every other filter is null (= don't filter by this).
+            petBox.getItems().setAll(petService.search(null, null, owner.getId(), null, null, null, null, null));
         }
         petBox.setValue(petBox.getItems().contains(chosen) ? chosen : null);
     }

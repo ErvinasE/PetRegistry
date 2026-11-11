@@ -22,8 +22,8 @@ public class CompanyService {
         return Repositories.companies().findAll();
     }
 
-    public List<Company> search(String name, String city) {
-        return Repositories.companies().search(name, city);
+    public List<Company> search(String text, String city, Boolean active) {
+        return Repositories.companies().search(text, city, active);
     }
 
     public Company create(Company company) {
