@@ -113,12 +113,12 @@ public class MainController {
     }
 
     /** Failas → Išeiti: closes the app only on "Taip". */
-    @FXML
-    private void onExit() {
-        if (confirmExit()) {
-            Platform.exit();
-        }
-    }
+//    @FXML
+//    private void onExit() {
+//        if (confirmExit()) {
+//            Platform.exit();
+//        }
+//    }
 
     /** Asks "Ar tikrai norite išeiti?" and returns true on "Taip". Public: MainApp uses it too. */
     public boolean confirmExit() {

@@ -17,11 +17,11 @@
     <top>
         <MenuBar>
             <menus>
-                <Menu text="Failas">
-                    <items>
-                        <MenuItem fx:id="exitItem" text="Išeiti" onAction="#onExit"/>
-                    </items>
-                </Menu>
+<!--                <Menu text="Failas">-->
+<!--                    <items>-->
+<!--                        <MenuItem fx:id="exitItem" text="Išeiti" onAction="#onExit"/>-->
+<!--                    </items>-->
+<!--                </Menu>-->
                 <!-- LAB2: only one of the two is enabled at a time (MainController switches them) -->
                 <Menu text="Duomenų bazė">
                     <items>
