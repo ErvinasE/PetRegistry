@@ -22,9 +22,9 @@ These are not new features. Later milestones needed them.
 | --- | --- | --- |
 | **Link first, then save** | `PetService.create`, `ServiceService.create`, `ReviewService.create` | In LAB2 the `INSERT` needs the parent's id (`owner_id`, `company_id`, `reservation_id`). Before, the code saved first and linked after, so the parent was still `null` during the INSERT. In memory the order didn't matter, so the bug was hidden. |
 | `ReservationService.validate` is now `public` | service | The reservation form uses the same "draft" pattern as the other forms (check a copy first). |
-| `Rateable.setAverageRating` added to the diagram | `docs/lab1-classes.puml` | The code had it, the diagram didn't. **The PNG must be regenerated** (IntelliJ PlantUML plugin → export), because PlantUML is not installed here. |
+| `Rateable.setAverageRating` added to the diagram | `lab1-classes.puml` | The code had it, the diagram didn't. **The PNG must be regenerated** (IntelliJ PlantUML plugin → export), because PlantUML is not installed here. |
 | `M5Check` expectation | `temp_tests` | In LAB1 both DB menu items were disabled. Since M11, "Prisijungti…" is enabled. |
-| Demo data in `docs/schema.sql` | docs | So the tabs aren't empty after connecting. Same data as `SeedData`; dates use `CURDATE()`, so future bookings stay in the future. |
+| Demo data in `schema.sql` | docs | So the tabs aren't empty after connecting. Same data as `SeedData`; dates use `CURDATE()`, so future bookings stay in the future. |
 
 ---
 
@@ -213,7 +213,7 @@ So after `useDatabase()` the very next call already goes to MySQL. This is the p
 "repository interface" design from M3: the switch is 6 lines in one class.
 
 ### How to check it yourself
-- XAMPP → MySQL Start. Load `docs/schema.sql` (phpMyAdmin → Import, or
+- XAMPP → MySQL Start. Load `schema.sql` (phpMyAdmin → Import, or
   `C:\xampp\mysql\bin\mysql.exe -u root < docs\schema.sql`). **Done already** on your PC: `pet_registry` exists
   with the demo data.
 - Run the app → Duomenų bazė → Prisijungti… → type a wrong password: an error, the dialog stays open.

@@ -22,7 +22,7 @@ The app starts with **demo data in memory**, so every tab works right away, with
 ## Connect to the database (LAB2)
 
 1. Start **XAMPP** → MySQL **Start**.
-2. Import [`docs/schema.sql`](docs/schema.sql): phpMyAdmin (`http://localhost/phpmyadmin`) → **Import** → choose the file → **Go**.
+2. Import [`schema.sql`](schema.sql): phpMyAdmin (`http://localhost/phpmyadmin`) → **Import** → choose the file → **Go**.
    Or from the command line: `C:\xampp\mysql\bin\mysql.exe -u root < docs\schema.sql`.
    It creates the database `pet_registry` with all tables **and the same demo data** as the memory mode.
    (Careful: it deletes an existing `pet_registry` database first.)
@@ -43,7 +43,7 @@ controller (JavaFX)  →  service (rules, validation)  →  repo interface  ← 
 
 | Package | What is in it |
 | --- | --- |
-| `model` | The classes from the diagram (`docs/lab1-classes.puml`) |
+| `model` | The classes from the diagram (`lab1-classes.puml`) |
 | `repo`, `repo.memory`, `repo.jdbc` | Storage interfaces and their two implementations. `Repositories` decides which one is in use |
 | `service` | All rules: validation (all errors at once), delete rules, status transitions, transactions |
 | `controller` + `resources/.../view/*.fxml` | Tabs, forms and dialogs |
@@ -55,12 +55,12 @@ Controllers never contain SQL, and the JDBC code never imports JavaFX.
 
 | File | Contents |
 | --- | --- |
-| [`docs/BUILD_PLAN.md`](docs/BUILD_PLAN.md) | Requirements, milestones M1–M13, all rules |
-| [`docs/lab1-classes.puml`](docs/lab1-classes.puml) / `.png` | Class diagram |
-| [`docs/schema.sql`](docs/schema.sql) | Database schema + demo data |
+| [`BUILD_PLAN.md`](BUILD_PLAN.md) | Requirements, milestones M1–M13, all rules |
+| [`lab1-classes.puml`](lab1-classes.puml) / `.png` | Class diagram |
+| [`schema.sql`](schema.sql) | Database schema + demo data |
 | [`explanation_plan.md`](explanation_plan.md) | How milestones M9–M13 work, step by step |
 
-## Checks (`temp_tests/`)
+## Checks (`../temp_tests`)
 
 Small programs that drive the real app or services from code and print `PASS` / `FAIL`
 (e.g. `M9Check` for reservations, `M12Check` for the JDBC repositories, `M13Check` for the GUI on the database).
