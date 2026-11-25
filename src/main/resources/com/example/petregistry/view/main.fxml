@@ -10,6 +10,8 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.control.Button?>
 <BorderPane prefHeight="650.0" prefWidth="1000.0"
             xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.example.petregistry.controller.MainController">
@@ -39,6 +41,7 @@
     </top>
 
     <center>
+        <StackPane>
         <TabPane fx:id="tabPane" tabClosingPolicy="UNAVAILABLE">
             <tabs>
                 <!-- Each tab is its own FXML + controller. fx:id "usersTab" -> field "usersTabController" -->
@@ -69,6 +72,8 @@
                 </Tab>
             </tabs>
         </TabPane>
+            <Button StackPane.alignment="TOP_RIGHT" text ="Atnaujinti" onAction="#onRefresh"/>
+        </StackPane>
     </center>
 
     <bottom>

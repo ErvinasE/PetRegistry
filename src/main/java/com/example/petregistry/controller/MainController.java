@@ -7,11 +7,7 @@ import com.example.petregistry.service.ReviewService;
 import com.example.petregistry.util.Dialogs;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
+import javafx.scene.control.*;
 import javafx.stage.Window;
 
 import java.util.Optional;
@@ -53,6 +49,12 @@ public class MainController {
             }
         });
     }
+    @FXML
+    private void onRefresh()
+    {
+        refreshAllTabs();
+    }
+
 
     /** Duomenų bazė → Prisijungti…: connect, switch to JDBC, reload every tab. If reading fails, go back to memory. */
     @FXML
