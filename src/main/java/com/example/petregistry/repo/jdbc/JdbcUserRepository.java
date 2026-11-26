@@ -121,6 +121,7 @@ public class JdbcUserRepository implements UserRepository {
         return Sql.one(SELECT + " WHERE u.email = ?", JdbcUserRepository::mapFull, email);
     }
 
+
     @Override
     public List<PetOwner> findOwners() {
         return Sql.list(SELECT + " WHERE u.role = 'PET_OWNER' ORDER BY u.id",
@@ -143,7 +144,7 @@ public class JdbcUserRepository implements UserRepository {
         return Sql.one(SELECT + " WHERE u.id = ?", JdbcUserRepository::mapRow, id);
     }
 
-    /** A company's caretakers, plain (the company links them to itself with hireCaretaker). */
+    /** A company`'s caretakers, plain (the company links them to itself with hireCaretaker). */
     static List<Caretaker> findPlainCaretakersOf(int companyId) {
         return Sql.list(SELECT + " WHERE u.role = 'CARETAKER' AND u.company_id = ? ORDER BY u.id",
                 rs -> (Caretaker) mapRow(rs), companyId);

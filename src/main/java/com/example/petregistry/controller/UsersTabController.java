@@ -40,7 +40,7 @@ public class UsersTabController {
         ComboBoxes.fillYesNo(blockedFilter);
 
         companyColumn.setCellValueFactory(cell -> new SimpleStringProperty(companyText(cell.getValue())));
-        blockedColumn.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().isBlocked() ? "Taip" : ""));
+        blockedColumn.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().isBlocked() ? "Taip" : "Ne"));
 
         // Double-click on a filled row = Redaguoti.
         table.setRowFactory(tableView -> {
