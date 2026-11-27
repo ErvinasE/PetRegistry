@@ -57,6 +57,7 @@ Controllers never contain SQL, and the JDBC code never imports JavaFX.
 | --- | --- |
 | [`lab1-classes.puml`](lab1-classes.puml) / `.png` | Class diagram |
 | [`schema.sql`](schema.sql) | Database schema + demo data |
+
 ## Checks (`../temp_tests`)
 
 Small programs that drive the real app or services from code and print `PASS` / `FAIL`
