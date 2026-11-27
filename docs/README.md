@@ -55,11 +55,8 @@ Controllers never contain SQL, and the JDBC code never imports JavaFX.
 
 | File | Contents |
 | --- | --- |
-| [`BUILD_PLAN.md`](BUILD_PLAN.md) | Requirements, milestones M1–M13, all rules |
 | [`lab1-classes.puml`](lab1-classes.puml) / `.png` | Class diagram |
 | [`schema.sql`](schema.sql) | Database schema + demo data |
-| [`explanation_plan.md`](explanation_plan.md) | How milestones M9–M13 work, step by step |
-
 ## Checks (`../temp_tests`)
 
 Small programs that drive the real app or services from code and print `PASS` / `FAIL`
