@@ -1,0 +1,13 @@
+# Pet Registry API demo requests.
+# Before running: start MySQL in XAMPP, then start PetRegistryApiApplication.
+
+@host = http://localhost:8080
+
+### R1.1 Start page (HTML)
+GET {{host}}/
+
+### R1.2 Services table (HTML)
+GET {{host}}/view/services
+
+### R1.3 Health check (JSON)
+GET {{host}}/api/health
